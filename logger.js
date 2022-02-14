@@ -6,11 +6,11 @@ class Logger {
   container = "[]";
   stack = "";
 
-  constructor(pengirim, isiPesan, textBalasan, jenisLog) {
+  constructor(pengirim, isiPesan, jenisLog) {
     this.jenisLog = jenisLog;
     this.pengirim = pengirim;
     this.isiPesan = isiPesan;
-    this.textBalasan = textBalasan;
+    this.container;
   }
 
   check = () => {
@@ -36,21 +36,11 @@ class Logger {
   };
 
   stacking = () => {
-    if (this.jenisLog == "notifikasi") {
-      this.stack = {
-        tujuan: this.pengirim,
-        perihal: this.isiPesan,
-        pesan: this.textBalasan,
-        waktu: moment().locale("id").format("LLLL"),
-      };
-    } else {
-      this.stack = {
-        pengirim: this.pengirim,
-        isiPesan: this.isiPesan,
-        textBalasan: this.textBalasan,
-        waktu: moment().locale("id").format("LLLL"),
-      };
-    }
+    this.stack = {
+      pengirim: this.pengirim,
+      isiPesan: this.isiPesan,
+      waktu: moment().locale("id").format("LLLL"),
+    };
   };
 
   push = () => {

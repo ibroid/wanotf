@@ -1,3 +1,8 @@
 {
-  "ignore": ["session.json", "whatsapp.js"]
+  "ignore": [
+    "session.json",
+    "whatsapp.js",
+    "../logs",
+    "logs/*"
+  ]
 }

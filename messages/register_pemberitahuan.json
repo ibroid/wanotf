@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "pesan": "*SELAMAT DATANG DI LAYANAN INFORMASI DAN NOTIFIKASI PERKARA (INTIP)*\nMohon Perhatian bahwa layanan ini adalah layanan otomatis yang dikirim oleh sistem dari Pengadilan Agama Jakarta Utara. Mohon maaf nomor ini tidak menerima telefon. Untuk mencari informasi silahkan gunakan layanan dibawah ini dengan menggunakan kata kunci sebagai berikut\n\ndaftar_layanan",
+        "keperluan": "pesan_awal"
+    },
+    {
+        "id": 2,
+        "pesan": "*PEMBERITAHUAN SIDANG*\n\n Untuk : nama_pihak\nSidang Ke : urutan_sidang\nTanggal Sidang : tanggal_sidang\nPukul : 08:00\nRuang Sidang : ruang_sidang\n\nSilahkan tunggu surat resmi panggilan sidang yang akan di antar oleh pegawai pengadilan. Apabila bapa/ibu menemukan tanggal sidang yang berbeda dengan tanggal sidang pada surat panggilan, Silahkan ikuti tanggal sidang yang tertera dalam Surat Panggilan.\n\n_Pesan ini dikirim secara otomatis oleh Layanan Informasi dan Notifikasi Perkara Pengadilan Agama Jakarta Utara_",
+        "keperluan": "pemberitahuan_sidang"
+    },
+    {
+        "id": 3,
+        "pesan": "*PEMBERITAHUAN AKTA CERAI*\n\nAkta cerai anda sudah terbit anda bisa mengambil nya besok lusa di kantor pengadilan agama jakarta utara atau menggunakan layanan drive thru dengan cara register disini http://in.pa-jakartautara.go.id:5000/drive-thru/page/pesan?data=nomor_perkara. Pastikan anda membawa fotocopy KTP dan uang untuk pembayaran PNBP.\n\n_Pesan ini dikirim secara otomatis oleh Layanan Informasi dan Notifikasi Perkara Pengadilan Agama Jakarta Utara_",
+        "keperluan": "pemberitahuan_akta"
+    }
+]

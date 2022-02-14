@@ -1,6 +1,6 @@
 const whatsapp = require("./whatsapp");
 const reply = require("./reply");
-// const cron = require("./schedule.js");
+const cron = require("./schedule.js");
 
 function start() {
   return new Promise((resolve, reject) => {
@@ -18,5 +18,5 @@ whatsapp.on("message", (msg) => {
 
 start().then((log) => {
   console.log(log);
-  // cron.start()
+  cron.start()
 });

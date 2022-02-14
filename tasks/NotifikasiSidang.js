@@ -1,58 +1,89 @@
-const {
-  perkara_jadwal_sidang,
-  Sequelize,
-  perkara_pihak1,
-  pihak,
-} = require("../models");
-const moment = require("moment");
 const client = require("../whatsapp");
-const { Op } = Sequelize;
-const register_pemberitahuan = require("../database/register_pemberitahuan.json");
-const now = moment().local("id");
 const { numberFormatter } = require("../helper/basic");
-const { toFullDate } = require("../helper/date");
+const Logger = require('../logger');
+const { PrismaClient } = require('@prisma/client');
+const { register_pemberitahuan } = require("../messages");
+const prisma = new PrismaClient()
+const moment = require('moment');
+const now = moment().locale('id').format('YYYY-MM-DD');
+
 
 module.exports = {
   start: async () => {
-    const data = await perkara_jadwal_sidang.findAll({
-      include: [
-        {
-          model: perkara_pihak1,
-          attributes: ["nama"],
-          include: [{ model: pihak, attributes: ["telepon", "nama"] }],
+    const data = await prisma.perkara.findMany({
+      select: {
+        nomor_perkara: true,
+        perkara_jadwal_sidang: {
+          select: {
+            tanggal_sidang: true,
+            agenda: true,
+            urutan: true,
+            ruangan: true
+          },
+          where: {
+            urutan: 1
+          },
         },
-      ],
-      where: {
-        diinput_tanggal: {
-          [Op.lt]: now.format("YYYY-MM-DD HH:mm:ss"),
-          [Op.gt]: now.subtract({ hour: 1 }).format("YYYY-MM-DD HH:mm:ss"),
-        },
+        perkara_pihak1: {
+          select: {
+            pihak: {
+              select: {
+                nama: true,
+                alamat: true,
+                telepon: true
+              }
+            }
+          }
+        }
       },
-      raw: true,
-    });
+      where: {
+        tanggal_pendaftaran: new Date(now)
+      },
+
+    })
 
     const registerJadwalSidang = register_pemberitahuan.find(
       (Element) => Element.keperluan == "pemberitahuan_sidang"
     );
 
     if (data) {
-      data.forEach(async (row) => {
-        const textBalasan = registerJadwalSidang.pesan
-          .replace("nama_pihak", row.perkara_pihak1.nama)
-          .replace("urutan_sidang", row.urutan)
-          .replace("ruang_sidang", row.ruangan ? row.ruangan : "Asyuraih")
-          .replace("tanggal_sidang", toFullDate(row.tanggal_sidang));
-        const { telepon } = row.perkara_pihak1.pihak;
+      data.forEach(row => {
+        console.log(row.nomor_perkara)
+        row.perkara_pihak1.forEach(async ros => {
 
-        try {
-          const resM = await client
-            .sendMessage(numberFormatter(telepon.toString()), textBalasan)
-            .then((res) => res)
-            .catch((err) => console.log(err));
-        } catch (error) {
-          console.log(err);
-        }
-      });
+          const jadwalSidang = row.perkara_jadwal_sidang[0]
+
+          const textBalasan = registerJadwalSidang.pesan
+            .replace("nama_pihak", ros.pihak.nama)
+            .replace("urutan_sidang", jadwalSidang.urutan)
+            .replace("ruang_sidang", (jadwalSidang.urutan) ? jadwalSidang.ruangan : "Asyuraih")
+            .replace("tanggal_sidang", moment(jadwalSidang.tanggal_sidang).locale('id').format('dddd LL'));
+
+          if (ros.pihak.telepon) {
+
+            try {
+              await client
+                .sendMessage(numberFormatter(String(ros.pihak.telepon)), textBalasan)
+                .then((res) => {
+
+                  console.log(`Notifikasi Terkirim ke ${ros.pihak.telepon} pada pukul ${moment().format()}`);
+
+                  const logger = new Logger('host', `Pemberitahuan Jadwal Sidang Pertama kepada pihak dengan nomor ${ros.pihak.telepon}`, 'notifikasi')
+
+                  logger.start()
+
+                })
+
+            } catch (error) {
+              await client
+                .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), "Terdapat error \n\n" + error)
+                .then((res) => res)
+                .catch((err) => console.log(err));
+
+            }
+          }
+        })
+      })
     }
   },
 };
