@@ -1,6 +1,8 @@
 const client = require("../whatsapp");
-const { toFullDate } = require("../helper/date");
-const { perkara_putusan } = require("../models");
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient()
+const Logger = require('../logger');
+const moment = require('moment');
 
 class PutusanController {
   constructor({ perkara_id, nomor_perkara }, balasan, from) {
@@ -10,25 +12,31 @@ class PutusanController {
     this.from = from;
   }
   send = async () => {
-    const data = await perkara_putusan.findOne({
+    const data = await prisma.perkara_putusan.findUnique({
       where: {
-        perkara_id: this.perkara_id,
-      },
-    });
+        perkara_id: this.perkara_id
+      }
+    })
     const { balasan_lainya, balasan } = this.balasan;
 
     if (data) {
-      const resM = client
-        .sendMessage(
-          this.from,
-          balasan
-            .replace("nomor_perkara", this.nomor_perkara)
-            .replace("amar_putusan", data.amar_putusan)
-        )
-        .then((res) => res)
+      client.sendMessage(
+        this.from,
+        balasan
+          .replace("nomor_perkara", this.nomor_perkara)
+          .replace("amar_putusan", data.amar_putusan))
+        .then((res) => {
+
+          const logger = new Logger("host", `Mengirim Informasi Putusan Ke ${this.from}`, "balasan");
+          console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
+
+          logger.start();
+
+        })
         .catch((err) => console.log(err));
+
     } else {
-      const resM = client
+      client
         .sendMessage(this.from, balasan_lainya)
         .then((res) => res)
         .catch((err) => console.log(err));

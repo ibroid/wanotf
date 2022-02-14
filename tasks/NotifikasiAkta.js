@@ -1,55 +1,75 @@
-const {
-  perkara_akta_cerai,
-  pihak,
-  perkara_pihak1,
-  Sequelize,
-} = require("../models");
-const moment = require("moment");
 const client = require("../whatsapp");
-const { Op } = Sequelize;
-const register_pemberitahuan = require("../database/register_pemberitahuan.json");
-const now = moment().local("id");
 const { numberFormatter } = require("../helper/basic");
-const { toFullDate } = require("../helper/date");
+const Logger = require('../logger');
+const { PrismaClient } = require('@prisma/client');
+const { register_pemberitahuan } = require("../messages");
+const prisma = new PrismaClient()
+const moment = require('moment');
+const now = moment().locale('id').format('YYYY-MM-DD');
 
-module.exports = {
-  start: async () => {
-    const data = await perkara_akta_cerai.findAll({
-      include: [
-        {
-          model: perkara_pihak1,
-          attributes: ["nama"],
-          include: [{ model: pihak, attributes: ["nama", "telepon"] }],
+async function debug() {
+    const data = await prisma.perkara_akta_cerai.findMany({
+        select: {
+            nomor_akta_cerai: true,
+            perkara_id: true,
+            tgl_akta_cerai: true,
+            perkara: {
+                select: {
+                    nomor_perkara: true,
+                    perkara_pihak1: {
+                        select: {
+                            nama: true,
+                            pihak: {
+                                select: {
+                                    telepon: true
+                                }
+                            }
+                        }
+                    }
+                },
+            }
         },
-      ],
-      where: {
-        diinput_tanggal: {
-          [Op.lt]: now.format("YYYY-MM-DD HH:mm:ss"),
-          [Op.gt]: now.subtract({ hour: 1 }).format("YYYY-MM-DD HH:mm:ss"),
-        },
-      },
-      raw: true,
-    });
+        where: {
+            tgl_akta_cerai: new Date(now)
+        }
+    })
 
-    const registerAktaCerai = register_pemberitahuan.find(
-      (Element) => Element.keperluan == "pemberitahuan_akta"
+    const registerAkta = register_pemberitahuan.find(
+        (Element) => Element.keperluan == "pemberitahuan_akta"
     );
 
     if (data) {
-      data.forEach(async (row) => {
-        const { telepon } = row.perkara_pihak1.pihak;
-        try {
-          const resM = await client
-            .sendMessage(
-              numberFormatter(telepon.toString()),
-              registerAktaCerai.pesan
-            )
-            .then((res) => res)
-            .catch((err) => console.log(err));
-        } catch (error) {
-          console.log(err);
-        }
-      });
+        data.forEach(row => {
+            console.log(row.nomor_perkara)
+            const telepon = row.perkara.perkara_pihak1[0].pihak.telepon;
+
+            const textBalasan = registerAkta.pesan;
+
+            if (telepon) {
+                console.log(`Kirim pesan ke ${telepon} dengan pesan ${textBalasan}`);
+                try {
+                    client.sendMessage(numberFormatter(telepon), textBalasan)
+                        .then(res => {
+
+                            console.log(`Notifikasi Terkirim ke ${telepon} pada pukul ${moment().format()}`);
+
+                            const logger = new Logger('host', `Pemberitahuan Jadwal Sidang Pertama kepada pihak dengan nomor ${telepon}`, 'notifikasi')
+
+                            logger.start()
+
+                        })
+                } catch (error) {
+                    await client
+                        .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), "Terdapat error \n\n" + error)
+                        .then((res) => res)
+                        .catch((err) => console.log(err));
+
+                }
+
+            }
+        })
     }
-  },
-};
+}
+
+
+debug();

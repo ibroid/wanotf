@@ -1,5 +1,8 @@
-const { perkara_akta_cerai, perkara } = require("../models");
+const { PrismaClient } = require('@prisma/client');
+const prisma = new PrismaClient()
 const client = require("../whatsapp");
+const Logger = require('../logger');
+const moment = require('moment');
 const { toFullDate } = require("../helper/date");
 
 class AktaCeraiController {
@@ -9,28 +12,38 @@ class AktaCeraiController {
     this.from = from;
   }
   send = async () => {
-    const data = await perkara_akta_cerai.findOne({
-      include: [{ model: perkara }],
+    const data = await prisma.perkara_akta_cerai.findUnique({
       where: {
-        perkara_id: this.perkara_id,
+        perkara_id: this.perkara_id
       },
-      raw: true,
-    });
+      include: {
+        perkara: true
+      }
+    })
 
     const { balasan, balasan_lainya } = this.balasan;
 
     if (data) {
       const textBalasan = data.tgl_akta_cerai
         ? balasan
-            .replace("nomor_perkara", data.perkara.nomor_perkara)
-            .replace("tanggal_akta_cerai", toFullDate(data.tgl_akta_cerai))
+          .replace("nomor_perkara", data.perkara.nomor_perkara)
+          .replace("tanggal_akta_cerai", toFullDate(data.tgl_akta_cerai))
         : balasan_lainya;
-      const messageResult = await client
+
+      await client
         .sendMessage(this.from, textBalasan)
-        .then((res) => res)
+        .then((res) => {
+
+          const logger = new Logger("host", `Mengirim Informasi Akta Ke ${this.from}`, "balasan");
+          console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
+
+          logger.start();
+
+        })
         .catch((err) => console.log(err));
+
     } else {
-      const messageResult = await client
+      await client
         .sendMessage(this.from, balasan_lainya)
         .then((res) => res)
         .catch((err) => console.log(err));
