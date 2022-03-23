@@ -42,11 +42,12 @@ module.exports = {
         if (data) {
 
             data.forEach(async row => {
-                console.log(row.nomor_perkara)
+                
                 const telepon = row.perkara.perkara_pihak1[0].pihak.telepon;
 
                 const textBalasan = registerAkta.pesan;
-
+		textBalasan.replcae('nomor_perkara', row.nomor_perkara);
+	
                 if (telepon) {
                     try {
                         await client.sendMessage(numberFormatter(telepon), textBalasan)
