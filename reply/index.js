@@ -67,6 +67,7 @@ module.exports = {
 
         const pesan = textSelamatDatang.pesan.replace('daftar_layanan', textServices)
         if (pesan) message.reply(pesan)
+        return false;
 
 
 
@@ -75,6 +76,7 @@ module.exports = {
 
         const pesan = register_alternatif.find(row => row.item == "awal")
         if (pesan) message.reply(pesan.text)
+        return false;
 
 
       }
