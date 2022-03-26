@@ -4,8 +4,8 @@
   "description": "Aplikasi Notifikasi Perkara Online",
   "main": "index.js",
   "scripts": {
-    "dev": "rm -rf ./dist/* && npx tsc && node ./dist/index.js",
-    "start": "pm2 start index.js"
+    "dev": "nodemon index.js",
+    "intip": "pm2 start index.js"
   },
   "author": "Maliki",
   "license": "ISC",
