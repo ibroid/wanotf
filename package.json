@@ -4,7 +4,7 @@
   "description": "Aplikasi Notifikasi Perkara Online",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon index.js",
+    "dev": "rm -rf ./dist/* && npx tsc && node ./dist/index.js",
     "start": "pm2 start index.js"
   },
   "author": "Maliki",
@@ -20,6 +20,7 @@
     "whatsapp-web.js": "^1.13.2"
   },
   "devDependencies": {
+    "@types/qrcode-terminal": "^0.12.0",
     "prisma": "^3.8.1"
   }
 }
