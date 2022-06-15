@@ -1,4 +1,4 @@
-const { Client } = require('whatsapp-web.js');
+const { Client, NoAuth } = require('whatsapp-web.js');
 const fs = require('fs');
 const qrcode = require('qrcode-terminal');
 
@@ -8,6 +8,7 @@ if (fs.existsSync(SESSION_FILE)) {
   SESSION_CONFIG = require(SESSION_FILE)
 }
 const option = {
+  authStrategy: new NoAuth(),
   restartOnAuthFail: true,
   puppeteer: {
     headless: true,
@@ -22,21 +23,17 @@ const option = {
       '--disable-gpu'
     ],
   },
-  
-}
-const client = (SESSION_CONFIG != null) ? new Client({session: SESSION_CONFIG, ...option}) : new Client(option)
 
-client.on('authenticated', (session) => {
-  SESSION_CONFIG = session;
-  fs.writeFile(SESSION_FILE, JSON.stringify(session), function (err) {
-      if (err) {
-        console.error(err);
-      }
-  });
+}
+
+const client = new Client(option);
+
+client.on('authenticated', () => {
+  console.log("Whatsapp is authenticated")
 });
 
 client.on('qr', qr => {
-  qrcode.generate(qr, {small: true});
+  qrcode.generate(qr, { small: true });
 });
 
 client.on('ready', () => {

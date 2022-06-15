@@ -11,9 +11,9 @@ const prisma = new PrismaClient()
 
 module.exports = {
   init: async (message) => {
-    const logger = new Logger(message.from, message.body, "pesan_masuk");
+    // const logger = new Logger(message.from, message.body, "pesan_masuk");
 
-    logger.start();
+    // logger.start();
 
     console.log(`Pesan masuk dari ${message.from} pada pukul ${moment().format()}`)
 
