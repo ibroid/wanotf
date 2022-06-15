@@ -27,10 +27,10 @@ class PutusanController {
           .replace("amar_putusan", data.amar_putusan))
         .then((res) => {
 
-          const logger = new Logger("host", `Mengirim Informasi Putusan Ke ${this.from}`, "balasan");
+          // const logger = new Logger("host", `Mengirim Informasi Putusan Ke ${this.from}`, "balasan");
+          // logger.start();
           console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 
-          logger.start();
 
         })
         .catch((err) => console.log(err));

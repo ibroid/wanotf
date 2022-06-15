@@ -52,11 +52,9 @@ class TransaksiController {
         await client.sendMessage(this.from, textBalasan)
             .then(res => {
 
-                const logger = new Logger("host", `Mengirim Informasi Transaksi Ke ${this.from}`, "balasan");
-
+                // const logger = new Logger("host", `Mengirim Informasi Transaksi Ke ${this.from}`, "balasan");
+                // logger.start();
                 console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
-
-                logger.start();
 
             })
             .catch(err => console.log(err))

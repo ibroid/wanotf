@@ -34,10 +34,10 @@ class AktaCeraiController {
         .sendMessage(this.from, textBalasan)
         .then((res) => {
 
-          const logger = new Logger("host", `Mengirim Informasi Akta Ke ${this.from}`, "balasan");
-          console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
+          // const logger = new Logger("host", `Mengirim Informasi Akta Ke ${this.from}`, "balasan");
 
-          logger.start();
+          // logger.start();
+          console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 
         })
         .catch((err) => console.log(err));

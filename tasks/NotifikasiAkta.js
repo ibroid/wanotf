@@ -42,22 +42,24 @@ module.exports = {
         if (data) {
 
             data.forEach(async row => {
-                
+
                 const telepon = row.perkara.perkara_pihak1[0].pihak.telepon;
 
-                const textBalasan = registerAkta.pesan;
-		textBalasan.replcae('nomor_perkara', row.nomor_perkara);
-	
+                let textBalasan = registerAkta.pesan;
+                textBalasan = String(textBalasan).replace('nomor_perkara', row.perkara.nomor_perkara)
+                textBalasan = String(textBalasan).replace('nomor_perkara', row.perkara.nomor_perkara)
+
                 if (telepon) {
                     try {
-                        await client.sendMessage(numberFormatter(telepon), textBalasan)
+                        // await client.sendMessage(numberFormatter(telepon), textBalasan)
+                        await client.sendMessage(numberFormatter(process.env.DEVELOPER_CONTACT), textBalasan)
                             .then(res => {
 
                                 console.log(`Notifikasi Terkirim ke ${telepon} pada pukul ${moment().format()}`);
 
-                                const logger = new Logger('host', `Pemberitahuan Jadwal Sidang Pertama kepada pihak dengan nomor ${telepon}`, 'notifikasi')
+                                // const logger = new Logger('host', `Pemberitahuan Jadwal Sidang Pertama kepada pihak dengan nomor ${telepon}`, 'notifikasi')
 
-                                logger.start()
+                                // logger.start()
 
                             })
                     } catch (error) {

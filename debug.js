@@ -37,10 +37,11 @@ async function debug() {
 
     if (data) {
         data.forEach(row => {
-            console.log(row.nomor_perkara)
             const telepon = row.perkara.perkara_pihak1[0].pihak.telepon;
-
-            const textBalasan = registerAkta.pesan;
+            const nomor_perkara = row.perkara.nomor_perkara;
+            let textBalasan = registerAkta.pesan;
+            textBalasan = String(textBalasan).replace('nomor_perkara', nomor_perkara)
+            textBalasan = String(textBalasan).replace('nomor_perkara', nomor_perkara)
             if (telepon) {
                 console.log(`Kirim pesan ke ${telepon} dengan pesan ${textBalasan}`);
             }
