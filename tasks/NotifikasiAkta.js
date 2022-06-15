@@ -51,8 +51,8 @@ module.exports = {
 
                 if (telepon) {
                     try {
-                        // await client.sendMessage(numberFormatter(telepon), textBalasan)
-                        await client.sendMessage(numberFormatter(process.env.DEVELOPER_CONTACT), textBalasan)
+                        await client.sendMessage(numberFormatter(String(telepon)), textBalasan)
+                            // await client.sendMessage(numberFormatter(process.env.DEVELOPER_CONTACT), textBalasan)
                             .then(res => {
 
                                 console.log(`Notifikasi Terkirim ke ${telepon} pada pukul ${moment().format()}`);

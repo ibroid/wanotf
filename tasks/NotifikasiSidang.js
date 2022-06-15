@@ -63,8 +63,8 @@ module.exports = {
 
             try {
               await client
-                // .sendMessage(numberFormatter(String(ros.pihak.telepon)), textBalasan)
-                .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), textBalasan)
+                .sendMessage(numberFormatter(String(ros.pihak.telepon)), textBalasan)
+                // .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), textBalasan)
                 .then((res) => {
 
                   console.log(`Notifikasi Terkirim ke ${ros.pihak.telepon} pada pukul ${moment().format()}`);
