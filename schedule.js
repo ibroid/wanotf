@@ -1,7 +1,7 @@
 const cron = require("node-cron");
 const tasks = require("./tasks");
 
-const jobs = cron.schedule('20 17 * * *', () => {
+const jobs = cron.schedule('40 17 * * *', () => {
     tasks.forEach(job => job.start());
 }, {
     timezone: 'Asia/Jakarta'
