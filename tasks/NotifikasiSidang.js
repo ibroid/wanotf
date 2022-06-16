@@ -52,35 +52,37 @@ module.exports = {
 
           const jadwalSidang = row.perkara_jadwal_sidang[0]
 
-          const textBalasan = registerJadwalSidang.pesan
+          if (jadwalSidang) {
+            const textBalasan = registerJadwalSidang.pesan
             .replace("nama_pihak", ros.pihak.nama)
             .replace("nomor_perkara", row.nomor_perkara)
-            .replace("urutan_sidang", jadwalSidang.urutan)
-            .replace("ruang_sidang", (jadwalSidang.urutan) ? jadwalSidang.ruangan : "Asyuraih")
+            .replace("urutan_sidang", (jadwalSidang.urutan) ? jadwalSidang.urutan : " " )
+            .replace("ruang_sidang", (jadwalSidang.ruangan) ? jadwalSidang.ruangan : "Asyuraih")
             .replace("tanggal_sidang", moment(jadwalSidang.tanggal_sidang).locale('id').format('dddd LL'));
 
-          if (ros.pihak.telepon) {
+            if (ros.pihak.telepon) {
 
-            try {
-              await client
-                .sendMessage(numberFormatter(String(ros.pihak.telepon)), textBalasan)
-                // .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), textBalasan)
-                .then((res) => {
+              try {
+                await client
+                  .sendMessage(numberFormatter(String(ros.pihak.telepon)), textBalasan)
+                  // .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), textBalasan)
+                  .then((res) => {
 
-                  console.log(`Notifikasi Terkirim ke ${ros.pihak.telepon} pada pukul ${moment().format()}`);
+                    console.log(`Notifikasi Terkirim ke ${ros.pihak.telepon} pada pukul ${moment().format()}`);
 
-                  // const logger = new Logger('host', `Pemberitahuan Jadwal Sidang Pertama kepada pihak dengan nomor ${ros.pihak.telepon}`, 'notifikasi')
+                    // const logger = new Logger('host', `Pemberitahuan Jadwal Sidang Pertama kepada pihak dengan nomor ${ros.pihak.telepon}`, 'notifikasi')
 
-                  // logger.start()
+                    // logger.start()
 
-                })
+                  })
 
-            } catch (error) {
-              await client
-                .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), "Terdapat error \n\n" + error)
-                .then((res) => res)
-                .catch((err) => console.log(err));
+              } catch (error) {
+                await client
+                  .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), "Terdapat error \n\n" + error)
+                  .then((res) => res)
+                  .catch((err) => console.log(err));
 
+              }
             }
           }
         })
