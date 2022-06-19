@@ -1,3 +1,3 @@
-const str = 'perkaraok';
+const str = 'INsSSsS';
 
-console.log(str.split('#').length)
+console.log(str.toLocaleLowerCase())

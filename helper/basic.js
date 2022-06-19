@@ -27,4 +27,7 @@ module.exports = {
     const today = new Date();
     return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()} ${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
   },
+  cleanString: (string) => {
+    return String(string).replace(' ', '').toLowerCase()
+  }
 };
