@@ -1,5 +1,7 @@
 module.exports = {
   numberFormatter: (number) => {
+    if (process.env.MODE == "dev") number = "089636811489";
+
     let formatted = number.replace(/\D/g, "");
     if (formatted.startsWith("0")) {
       formatted = "62" + formatted.substr(1);
@@ -10,6 +12,7 @@ module.exports = {
     return formatted;
   },
   reverseNumberFormatter: (number) => {
+
     let formatted = number.replace(/\D/g, "");
     if (formatted.startsWith("62")) {
       formatted = "0" + formatted.substr(2);
@@ -17,6 +20,7 @@ module.exports = {
     if (formatted.endsWith("@c.us")) {
       formatted.replace("@c.us", "");
     }
+    if (process.env.MODE == "dev") return "089636811489";
     return formatted;
   },
   timeNow: () => {

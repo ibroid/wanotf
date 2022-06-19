@@ -1,4 +1,5 @@
-const { Client, NoAuth } = require('whatsapp-web.js');
+
+const { Client, NoAuth, LocalAuth } = require('whatsapp-web.js');
 const fs = require('fs');
 const qrcode = require('qrcode-terminal');
 
@@ -8,7 +9,7 @@ if (fs.existsSync(SESSION_FILE)) {
   SESSION_CONFIG = require(SESSION_FILE)
 }
 const option = {
-  authStrategy: new NoAuth(),
+  authStrategy: new LocalAuth({ dataPath: './auth' }),
   restartOnAuthFail: true,
   puppeteer: {
     headless: true,
@@ -28,16 +29,23 @@ const option = {
 
 const client = new Client(option);
 
-client.on('authenticated', () => {
-  console.log("Whatsapp is authenticated")
-});
+function initialization() {
+  client.initialize();
 
-client.on('qr', qr => {
-  qrcode.generate(qr, { small: true });
-});
+  client.on('qr', qr => {
+    qrcode.generate(qr, { small: true });
+  });
 
-client.on('ready', () => {
-  console.log('Whatsapp is ready!');
-});
+  client.on('authenticated', () => {
+    console.log('Whatsapp is authenticated');
+  });
 
-module.exports = client
+  return new Promise((resolve, reject) => {
+    client.on('ready', () => {
+      console.log('Whatsapp is ready!');
+      resolve()
+    });
+  });
+}
+
+module.exports = { client, initialization }
