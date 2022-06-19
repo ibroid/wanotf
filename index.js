@@ -7,7 +7,7 @@ whatsapp.initialization().then(() => {
   console.log('Schedule Notification Started');
 
   whatsapp.client.on('message', message => {
-    message.getChat().then(chat => chat.sendSeen)
+    message.getChat().then(chat => chat.sendSeen())
     new Reply(message)
   })
 
