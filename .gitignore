@@ -2,3 +2,4 @@ node_modules/
 logs/
 ./session.json
 .wwebjs_auth/
+auth/
