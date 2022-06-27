@@ -1,3 +1,3 @@
-const str = 'INsSSsS';
+const notifSidang = require('./tasks/NotifikasiSidang');
 
-console.log(str.toLocaleLowerCase())
+notifSidang.start()

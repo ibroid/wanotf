@@ -37,7 +37,7 @@ module.exports = {
         }
       },
       where: {
-        tanggal_pendaftaran: new Date(now)
+        tanggal_pendaftaran: now
       },
 
     })
@@ -54,11 +54,11 @@ module.exports = {
 
           if (jadwalSidang) {
             const textBalasan = registerJadwalSidang.pesan
-            .replace("nama_pihak", ros.pihak.nama)
-            .replace("nomor_perkara", row.nomor_perkara)
-            .replace("urutan_sidang", (jadwalSidang.urutan) ? jadwalSidang.urutan : " " )
-            .replace("ruang_sidang", (jadwalSidang.ruangan) ? jadwalSidang.ruangan : "Asyuraih")
-            .replace("tanggal_sidang", moment(jadwalSidang.tanggal_sidang).locale('id').format('dddd LL'));
+              .replace("nama_pihak", ros.pihak.nama)
+              .replace("nomor_perkara", row.nomor_perkara)
+              .replace("urutan_sidang", (jadwalSidang.urutan) ? jadwalSidang.urutan : " ")
+              .replace("ruang_sidang", (jadwalSidang.ruangan) ? jadwalSidang.ruangan : "Asyuraih")
+              .replace("tanggal_sidang", moment(jadwalSidang.tanggal_sidang).locale('id').format('dddd LL'));
 
             if (ros.pihak.telepon) {
 

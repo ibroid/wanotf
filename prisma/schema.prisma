@@ -2503,7 +2503,7 @@ model perkara_biaya {
   pihak_id               BigInt?
   pihak_ke               Int?
   urutan                 Int?                    @db.UnsignedInt
-  jenis_transaksi        Boolean
+  jenis_transaksi        Int
   tanggal_transaksi      DateTime                @db.Date
   uraian                 String                  @default(dbgenerated("()")) @db.VarChar(500)
   jumlah                 Decimal                 @db.Decimal(16, 2)
@@ -3344,7 +3344,7 @@ model perkara_jadwal_sidang {
   diedit_oleh          String?         @db.VarChar(30)
   diedit_tanggal       DateTime?       @db.DateTime(0)
   diinput_oleh         String?         @db.VarChar(30)
-  diinput_tanggal      DateTime?       @db.DateTime(0)
+  diinput_tanggal      DateTime?       @db.Timestamp(0)
   diperbaharui_oleh    String?         @db.VarChar(30)
   diperbaharui_tanggal DateTime?       @db.DateTime(0)
   perkara              perkara         @relation(fields: [perkara_id], references: [perkara_id], onDelete: Cascade, onUpdate: Restrict, map: "perkara_jadwal_sidang_fk")
