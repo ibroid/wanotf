@@ -8,7 +8,9 @@ whatsapp.initialization().then(() => {
 
   whatsapp.client.on('message', message => {
     message.getChat().then(chat => chat.sendSeen())
-    new Reply(message)
+    if (!message.isStatus && !message.hasMedia && !message.isGif && !message.broadcast) {
+      new Reply(message)
+    }
   })
 
   whatsapp.client.getChats().then(chats => {
@@ -16,7 +18,9 @@ whatsapp.initialization().then(() => {
       if (chat.unreadCount > 0) {
         chat.fetchMessages({ limit: chat.unreadCount }).then(messages => {
           messages.forEach(message => {
-            new Reply(message)
+            if (!message.isStatus && !message.hasMedia && !message.isGif && !message.broadcast) {
+              new Reply(message)
+            }
           })
         })
         chat.sendSeen()
