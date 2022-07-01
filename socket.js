@@ -1,6 +1,6 @@
 const { io } = require("socket.io-client");
 
-socket = io('ws://localhost:3000');
+socket = io(process.env.SOCKET_URL);
 
 socket.on('connect', () => {
     console.log('Connected to IS Monitor');

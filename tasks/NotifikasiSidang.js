@@ -1,10 +1,10 @@
-const client = require("../whatsapp");
-const { numberFormatter } = require("../helper/basic");
-const Logger = require('../logger');
+const { client } = require("../whatsapp");
+const { reverseNumberFormatter, numberFormatter } = require('../helper/basic');
 const { PrismaClient } = require('@prisma/client');
 const { register_pemberitahuan } = require("../messages");
 const prisma = new PrismaClient()
 const moment = require('moment');
+const socket = require('../socket');
 const now = moment().locale('id').format('YYYY-MM-DD');
 
 
@@ -37,7 +37,7 @@ module.exports = {
         }
       },
       where: {
-        tanggal_pendaftaran: now
+        tanggal_pendaftaran: new Date(now)
       },
 
     })
@@ -65,14 +65,10 @@ module.exports = {
               try {
                 await client
                   .sendMessage(numberFormatter(String(ros.pihak.telepon)), textBalasan)
-                  // .sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), textBalasan)
                   .then((res) => {
 
                     console.log(`Notifikasi Terkirim ke ${ros.pihak.telepon} pada pukul ${moment().format()}`);
 
-                    // const logger = new Logger('host', `Pemberitahuan Jadwal Sidang Pertama kepada pihak dengan nomor ${ros.pihak.telepon}`, 'notifikasi')
-
-                    // logger.start()
 
                   })
 

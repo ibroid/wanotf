@@ -2,6 +2,7 @@ const { client } = require("../whatsapp");
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient()
 const moment = require('moment');
+const socket = require('../socket');
 const { numberFormatter, reverseNumberFormatter } = require('../helper/basic');
 
 class PutusanController {

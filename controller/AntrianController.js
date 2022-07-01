@@ -1,7 +1,7 @@
-const { error } = require('qrcode-terminal');
 const { client } = require('../whatsapp');
 const axios = require('axios').default;
 const moment = require('moment');
+const socket = require('../socket');
 const { reverseNumberFormatter, numberFormatter } = require('../helper/basic');
 class AntrianController {
 	constructor(identifier, balasan, { from, id }) {
@@ -12,7 +12,7 @@ class AntrianController {
 	}
 
 	send() {
-		axios.get('http://api.pa-jakartautara.go.id/antrian/sidang/on_call')
+		axios.get(process.env.API_URL)
 			.then(async (result) => {
 				console.log(result.data)
 				if (!result.data) {

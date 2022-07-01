@@ -2,6 +2,7 @@ const { PrismaClient } = require('@prisma/client');
 const moment = require('moment');
 const prisma = new PrismaClient()
 const { client } = require('../whatsapp');
+const socket = require('../socket');
 const { numberFormatter, reverseNumberFormatter } = require('../helper/basic');
 const { toFullDate } = require('../helper/date');
 

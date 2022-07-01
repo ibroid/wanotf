@@ -78,6 +78,7 @@ class Reply {
 
 		const pesan = new Controller(identifier, getService, this.message)
 		pesan.send()
+		return false;
 	}
 
 	replyInfo() {
@@ -91,6 +92,7 @@ class Reply {
 		const pesan = textSelamatDatang.pesan.replace('daftar_layanan', textServices)
 		this.message.reply(pesan)
 		this.sendLogOut(pesan)
+		return false;
 	}
 
 	async sendLog() {
