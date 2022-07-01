@@ -3,3 +3,4 @@ logs/
 ./session.json
 .wwebjs_auth/
 auth/
+.env
