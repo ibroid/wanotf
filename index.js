@@ -1,34 +1,26 @@
-const whatsapp = require("./whatsapp");
-const Reply = require("./reply/main");
-const cron = require("./schedule.js");
+import { startSock, getSession } from "./whatsapp.js";
+import Reply from "./reply.js";
+import nodeCleanup from "node-cleanup"
 
-whatsapp.initialization().then(() => {
-  cron.start()
-  console.log('Schedule Notification Started');
+(async function initialize() {
 
-  whatsapp.client.on('message', async (message) => {
-    const chat = await message.getChat()
-    await chat.sendSeen()
-    if (!message.isStatus && !message.hasMedia && !message.isGif && !message.broadcast) {
-      new Reply(message)
-    }
-  })
+  const sock = await startSock()
 
-  whatsapp.client.getChats().then(chats => {
-    chats.forEach(async (chat) => {
-      if (chat.unreadCount > 0) {
-        await chat.sendSeen()
-        await chat.fetchMessages({ limit: chat.unreadCount }).then(messages => {
-          messages.forEach(message => {
-            if (!message.isStatus && !message.hasMedia && !message.isGif && !message.broadcast) {
-              new Reply(message)
-            }
-          })
-        })
 
-      }
-    })
-  })
+})()
+
+nodeCleanup(() => {
+  const autologout = process.argv.includes('--auto-logout')
+  /**
+   * @type {import ("@whiskeysockets/baileys").WASocket;}
+   */
+  const session = getSession();
+
+  if (session && autologout) {
+    console.log("Logout from Whatsapp before close the application")
+    session.logout()
+  }
+
 })
 
 

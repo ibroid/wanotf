@@ -1,17 +1,14 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient()
-const { numberFormatter, reverseNumberFormatter } = require('../helper/basic');
-const { client } = require("../whatsapp");
-const moment = require('moment');
-const { toFullDate } = require("../helper/date");
-const socket = require('../socket');
-
+import moment from 'moment';
+import { toFullDate } from "../helper/date.js";
+import { sendMessageWTyping } from "../whatsapp.js";
+import basic from "../helper/basic.js"
 class AktaCeraiController {
-  constructor({ perkara_id }, balasan, { from, id }) {
+  constructor({ perkara_id }, balasan, remoteJid) {
     this.perkara_id = perkara_id;
     this.balasan = balasan;
-    this.from = from;
-    this.id = id;
+    this.from = remoteJid;
   }
   send = async () => {
     let data;
@@ -25,16 +22,16 @@ class AktaCeraiController {
         }
       })
     } catch (error) {
-      client.sendMessage(process.env.DEVELOPER_CONTACT, `Error pada saat membalas informasi akta cerai\n\Log: ${error}`);
+      sendMessageWTyping({ text: `Error pada saat membalas informasi akta cerai\n\Log: ${error}` }, basic.numberFormatter(process.env.DEVELOPER_CONTACT));
 
-      client.sendMessage(this.from, "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya");
+      sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
       return false;
     }
 
     const { balasan, balasan_lainya } = this.balasan;
 
     if (!data) {
-      client.sendMessage(this.from, balasan_lainya).catch((err) => console.log(err));
+      sendMessageWTyping({ text: balasan_lainya }, this.from);
       return false;
     }
 
@@ -44,20 +41,11 @@ class AktaCeraiController {
         .replace("tanggal_akta_cerai", toFullDate(data.tgl_akta_cerai))
       : balasan_lainya;
 
-    client.sendMessage(this.from, textBalasan)
-      .then(() => {
+    sendMessageWTyping({ text: textBalasan }, this.from)
 
-        console.log(`Informasi AKta cerai Terkirim ke ${this.from} pada pukul ${moment().format()}`)
-        socket.emit('sendLogMessageOut', {
-          number: reverseNumberFormatter(this.from),
-          message: textBalasan,
-          reference_id: this.id.id,
-        })
-      }
-      )
-      .catch((err) => console.log(err));
+    console.log(`Informasi AKta cerai Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 
   };
 }
 
-module.exports = AktaCeraiController;
+export default AktaCeraiController;

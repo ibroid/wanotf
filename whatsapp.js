@@ -1,51 +1,130 @@
+import NodeCache from 'node-cache'
+import pkg from "@whiskeysockets/baileys";
+import basic from "./helper/basic.js"
 
-const { Client, NoAuth, LocalAuth } = require('whatsapp-web.js');
-const fs = require('fs');
-const qrcode = require('qrcode-terminal');
+const { delay, DisconnectReason, fetchLatestBaileysVersion, getAggregateVotesInPollMessage, makeInMemoryStore, proto, useMultiFileAuthState, makeCacheableSignalKeyStore, isJidBroadcast, Browsers } = pkg
 
-const SESSION_FILE = './session.json'
-let SESSION_CONFIG = null;
-if (fs.existsSync(SESSION_FILE)) {
-  SESSION_CONFIG = require(SESSION_FILE)
+import Reply from './reply.js';
+
+import P from 'pino'
+
+const logger = P({ timestamp: () => `,"time":"${new Date().toJSON()}"` }).child({})
+logger.level = 'trace'
+
+// external map to store retry counts of messages when decryption/encryption fails
+// keep this out of the socket itself, so as to prevent a message decryption/encryption loop across socket restarts
+const msgRetryCounterCache = new NodeCache()
+
+const Session = new Map();
+
+// start a connection
+const startSock = async () => {
+  const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
+  // fetch latest version of WA Web
+  const { version, isLatest } = await fetchLatestBaileysVersion()
+  console.log(`using WA v${version.join('.')}, isLatest: ${isLatest}`)
+
+  /**
+   * @type {import('@whiskeysockets/baileys').WASocket}
+   */
+  const sock = pkg.default({
+    version,
+    // logger,
+    printQRInTerminal: true,
+    auth: {
+      creds: state.creds,
+      /** caching makes the store faster to send/recv messages */
+      keys: makeCacheableSignalKeyStore(state.keys, logger),
+    },
+    msgRetryCounterCache,
+    generateHighQualityLinkPreview: true,
+    // ignore all broadcast messages -- to receive the same
+    // comment the line below out
+    shouldIgnoreJid: jid => isJidBroadcast(jid),
+    browser: Browsers.ubuntu('Chrome')
+  })
+
+  // the process function lets you process all events that just occurred
+  // efficiently in a batch
+
+  sock.ev.on('connection.update', (conn) => {
+
+    const { connection, lastDisconnect } = conn
+
+    if (connection === 'close') {
+      // reconnect if not logged out
+      if ((lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut) {
+        startSock()
+      } else {
+        console.log('Connection closed. You are logged out.')
+      }
+    }
+
+    console.log('connection update')
+  })
+
+  sock.ev.on('creds.update', saveCreds);
+
+  sock.ev.on('messages.upsert', async (message) => {
+    if (
+      message.messages[0].key.fromMe !== true &&
+      message.messages[0].key.remoteJid !== 'status@broadcast'
+    ) {
+      const reply = new Reply(message.messages[0])
+      await reply.init();
+
+      await sock.readMessages([message.messages[0].key])
+
+      await sock.presenceSubscribe(message.messages[0].key.remoteJid)
+      await delay(500)
+      await sock.sendPresenceUpdate('composing', message.messages[0].key.remoteJid)
+      await delay(2000)
+      await sock.sendPresenceUpdate('paused', message.messages[0].key.remoteJid)
+
+      if (reply.error) {
+        await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
+      }
+
+      if (reply.service !== null) {
+
+      }
+
+      // await sock.sendMessage(message.messages[0].key.remoteJid, { text: reply.text })
+    }
+  })
+
+  Session.set("WASock", sock)
+
+  return sock;
 }
-const option = {
-  authStrategy: new LocalAuth({ dataPath: './auth' }),
-  restartOnAuthFail: true,
-  puppeteer: {
-    headless: true,
-    args: [
-      '--no-sandbox',
-      '--disable-setuid-sandbox',
-      '--disable-dev-shm-usage',
-      '--disable-accelerated-2d-canvas',
-      '--no-first-run',
-      '--no-zygote',
-      // '--single-process', // <- this one doesn't works in Windows
-      '--disable-gpu'
-    ],
-  },
 
+const getSession = () => {
+  return Session.get("WASock") ?? null;
 }
 
-const client = new Client(option);
+const sendMessageWTyping = async (msg, jid) => {
+  /**
+   * @type {import ("@whiskeysockets/baileys").WASocket;}
+   */
+  const session = getSession()
+  if (session) {
 
-function initialization() {
-  client.initialize();
+    await session.presenceSubscribe(jid)
+    await delay(500)
+    await session.sendPresenceUpdate('composing', jid)
+    await delay(2000)
 
-  client.on('qr', qr => {
-    qrcode.generate(qr, { small: true });
-  });
+    await session.sendPresenceUpdate('paused', jid)
 
-  client.on('authenticated', () => {
-    console.log('Whatsapp is authenticated');
-  });
+    await session.sendMessage(jid, msg)
+    return false;
+  }
 
-  return new Promise((resolve, reject) => {
-    client.on('ready', () => {
-      console.log('Whatsapp is ready!');
-      resolve()
-    });
-  });
+  console.log('No Session was Connected to Whatsapp')
 }
 
-module.exports = { client, initialization }
+export {
+  startSock,
+  sendMessageWTyping,
+  getSession,
+};

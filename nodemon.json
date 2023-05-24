@@ -2,7 +2,9 @@
   "ignore": [
     "session.json",
     "whatsapp.js",
+    "baileys_whatsapp.js",
     "../logs",
-    "logs/*"
+    "logs/*",
+    "baileys_auth_info/*"
   ]
 }
