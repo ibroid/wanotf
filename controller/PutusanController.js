@@ -1,17 +1,16 @@
-const { client } = require("../whatsapp");
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient()
-const moment = require('moment');
-const socket = require('../socket');
-const { numberFormatter, reverseNumberFormatter } = require('../helper/basic');
+import moment from "moment";
+import { sendMessageWTyping } from "../whatsapp.js";
+import basic from "../helper/basic.js"
+const { numberFormatter } = basic;
 
 class PutusanController {
-  constructor({ perkara_id, nomor_perkara }, balasan, { from, id }) {
+  constructor({ perkara_id, nomor_perkara }, balasan, from) {
     this.nomor_perkara = nomor_perkara;
     this.perkara_id = perkara_id;
     this.balasan = balasan;
     this.from = from;
-    this.id = id;
   }
   send = async () => {
     let data;
@@ -22,36 +21,25 @@ class PutusanController {
         }
       })
     } catch (error) {
-      client.sendMessage(process.env.DEVELOPER_CONTACT, `Error pada saat membalas informasi putusan\n\Log: ${error}`);
+      sendMessageWTyping({ text: `Error pada saat membalas informasi putusan\n\Log: ${error}` }, numberFormatter(process.env.DEVELOPER_CONTACT));
 
-      client.sendMessage(this.from, "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya");
+      sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
       return false;
     }
 
     const { balasan_lainya, balasan } = this.balasan;
 
     if (!data) {
-      client
-        .sendMessage(this.from, balasan_lainya)
-        .then((res) => res)
-        .catch((err) => console.log(err));
+      sendMessageWTyping({ text: balasan_lainya }, this.from)
       return false;
     }
 
     const textBalasan = String(balasan).replace("nomor_perkara", this.nomor_perkara).replace("amar_putusan", data.amar_putusan)
 
-    client.sendMessage(this.from, textBalasan)
-      .then((res) => {
-        console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
-        socket.emit('sendLogMessageOut', {
-          number: reverseNumberFormatter(this.from),
-          message: textBalasan,
-          reference_id: this.id.id,
-        })
-      })
-      .catch((err) => console.log(err));
+    sendMessageWTyping({ text: textBalasan }, this.from)
+    console.log(`Pesan Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 
   };
 }
 
-module.exports = PutusanController;
+export default PutusanController;

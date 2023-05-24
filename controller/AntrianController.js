@@ -1,5 +1,4 @@
-const { client } = require('../whatsapp');
-const axios = require('axios').default;
+import axios from 'axios';
 const moment = require('moment');
 const socket = require('../socket');
 const { reverseNumberFormatter, numberFormatter } = require('../helper/basic');
@@ -57,4 +56,4 @@ class AntrianController {
 	}
 }
 
-module.exports = AntrianController;
+export default AntrianController;

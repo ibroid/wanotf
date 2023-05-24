@@ -1,10 +1,11 @@
-const moment = require('moment')
+import moment from "moment"
+
 moment.locale('id');
-module.exports = {
-    toFullDate: (date) => {
-        return moment(date).local('id').format('dddd LL');
-    },
-    toFullDateWithTime: (date) => {
-        return moment(date + ' 09:00:00').local('id').format('dddd LL');
-    }
+const toFullDate = (date) => {
+    return moment(date).local('id').format('dddd LL');
 }
+const toFullDateWithTime = (date) => {
+    return moment(date + ' 09:00:00').local('id').format('dddd LL');
+}
+
+export { toFullDate, toFullDateWithTime }

@@ -1,20 +1,19 @@
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient()
-const { client } = require('../whatsapp');
-const { toFullDate } = require('../helper/date');
-const { rupiah, jenisTrans } = require('../helper/nominal');
-const { numberFormatter, reverseNumberFormatter } = require('../helper/basic');
-const angkaTerbilang = require('@develoka/angka-terbilang-js');
-const socket = require('../socket');
-const moment = require('moment');
+import { sendMessageWTyping } from '../whatsapp.js';
+import { toFullDate } from '../helper/date.js';
+import { jenisTrans, rupiah } from "../helper/nominal.js"
+import basic from "../helper/basic.js"
+const { numberFormatter, reverseNumberFormatter } = basic;
+import angkaTerbilang from '@develoka/angka-terbilang-js';
+import moment from 'moment';
 
 class TransaksiController {
-    constructor({ perkara_id, nomor_perkara }, balasan, { from, id }) {
+    constructor({ perkara_id, nomor_perkara }, balasan, from) {
         this.perkara_id = perkara_id
         this.nomor_perkara = nomor_perkara
         this.balasan = balasan
         this.from = from
-        this.id = id
     }
 
     send = async () => {
@@ -28,16 +27,16 @@ class TransaksiController {
             })
 
         } catch (error) {
-            client.sendMessage(numberFormatter(process.env.DEVELOPER_CONTACT), `Error pada saat membalas informasi transaksi\n\Log: ${error}`);
+            sendMessageWTyping({ text: `Error pada saat membalas informasi transaksi\n\Log: ${error}` }, numberFormatter(process.env.DEVELOPER_CONTACT));
 
-            client.sendMessage(numberFormatter(this.from), "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya");
+            sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
             return false
         }
 
         const { balasan, balasan_lainya } = this.balasan;
 
         if (!pembayaran) {
-            client.sendMessage(this.from, balasan_lainya).catch(err => console.log(err))
+            sendMessageWTyping({ text: balasan_lainya }, this.from)
             return false
         }
 
@@ -65,18 +64,12 @@ class TransaksiController {
         const textBalasan = String(balasan)
             .replace('nomor_perkara', this.nomor_perkara)
             .replace('riwayat_pembayaran', textRiwayatPembayaran)
-        client.sendMessage(this.from, textBalasan)
-            .then(res => {
-                console.log(`Informasi Transaksi Terkirim ke ${this.from} pada pukul ${moment().format()}`)
-                socket.emit('sendLogMessageOut', {
-                    number: reverseNumberFormatter(this.from),
-                    message: textBalasan,
-                    reference_id: this.id.id,
-                })
-            })
-            .catch(err => console.log(err))
+
+        console.log(`Informasi Transaksi Terkirim ke ${this.from} pada pukul ${moment().format()}`)
+
+        sendMessageWTyping({ text: textBalasan }, this.from)
 
     }
 }
 
-module.exports = TransaksiController
+export default TransaksiController

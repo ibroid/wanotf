@@ -3,24 +3,29 @@
   "version": "1.0.0",
   "description": "Aplikasi Notifikasi Perkara Online",
   "main": "index.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "dev:reset": "rm -rf ./auth && nodemon index.js",
-    "start intip": "pm2 start index.js"
+    "start": "node index.js",
+    "dev": "npx nodemon index.js --dev",
+    "dev:reset": "rm -rf ./baileys_auth_info && node index.js --auto-logout --dev",
+    "prod": "pm2 start index.js"
   },
   "author": "Maliki",
   "license": "ISC",
   "dependencies": {
+    "@adiwajshing/keyed-db": "^0.2.4",
     "@develoka/angka-terbilang-js": "^1.4.2",
     "@prisma/client": "^3.8.1",
+    "@whiskeysockets/baileys": "^6.0.0",
     "axios": "^0.21.4",
     "moment": "^2.29.1",
     "mysql2": "^2.3.3",
+    "node-cleanup": "^2.1.2",
     "node-cron": "^3.0.0",
+    "pino": "^8.14.1",
     "qrcode-terminal": "^0.12.0",
     "socket.io-client": "^4.5.1",
-    "uuid": "^8.3.2",
-    "whatsapp-web.js": "^1.16.4"
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@types/qrcode-terminal": "^0.12.0",

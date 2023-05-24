@@ -1,16 +1,10 @@
-const { PrismaClient } = require('@prisma/client');
-const moment = require('moment');
-const prisma = new PrismaClient()
-const { client } = require('../whatsapp');
-const socket = require('../socket');
-const { reverseNumberFormatter } = require('../helper/basic');
-const { toFullDate } = require('../helper/date');
+import moment from 'moment';
+import { sendMessageWTyping } from '../whatsapp.js';
 
-class SidangController {
-    constructor(identifier, balasan, { from, id }) {
+class PersyaratanController {
+    constructor(identifier, balasan, from) {
         this.balasan = balasan
         this.from = from
-        this.id = id
         this.identifier = identifier
     }
 
@@ -27,19 +21,10 @@ class SidangController {
         } else {
             textBalasan += balasan_lainya
         }
-        // const textBalasan = (balasan[this.identifier]) ? balasan[this.identifier] : balasan_lainya;
 
-        client.sendMessage(this.from, textBalasan)
-            .then(res => {
-                console.log(`Informasi persyaratan perkara Terkirim ke ${this.from} pada pukul ${moment().format()}`)
-                socket.emit('sendLogMessageOut', {
-                    number: reverseNumberFormatter(this.from),
-                    message: textBalasan,
-                    reference_id: this.id.id,
-                });
-            }).catch(err => console.log(err))
-
+        sendMessageWTyping({ text: textBalasan }, this.from)
+        console.log(`Informasi persyaratan perkara Terkirim ke ${this.from} pada pukul ${moment().format()}`)
     }
 }
 
-module.exports = SidangController
+export default PersyaratanController;

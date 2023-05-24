@@ -1,4 +1,4 @@
-module.exports = {
+const basicHelper = {
   numberFormatter: (number) => {
     if (process.env.MODE == "dev") number = "089636811489";
     number = String(number);
@@ -6,8 +6,8 @@ module.exports = {
     if (formatted.startsWith("0")) {
       formatted = "62" + formatted.substr(1);
     }
-    if (!formatted.endsWith("@c.us")) {
-      formatted += "@c.us";
+    if (!formatted.endsWith("@s.whatsapp.net")) {
+      formatted += "@s.whatsapp.net";
     }
     return formatted;
   },
@@ -17,8 +17,8 @@ module.exports = {
     if (formatted.startsWith("62")) {
       formatted = "0" + formatted.substr(2);
     }
-    if (formatted.endsWith("@c.us")) {
-      formatted.replace("@c.us", "");
+    if (formatted.endsWith("@s.whatsapp.net")) {
+      formatted.replace("@s.whatsapp.net", "");
     }
     if (process.env.MODE == "dev") return "089636811489";
     return formatted;
@@ -31,3 +31,4 @@ module.exports = {
     return String(string).replace(' ', '').toLowerCase()
   }
 };
+export default basicHelper

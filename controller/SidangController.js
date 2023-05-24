@@ -1,18 +1,17 @@
-const { PrismaClient } = require('@prisma/client');
-const moment = require('moment');
+import { PrismaClient } from '@prisma/client';
+import moment from 'moment';
 const prisma = new PrismaClient()
-const { client } = require('../whatsapp');
-const socket = require('../socket');
-const { numberFormatter, reverseNumberFormatter } = require('../helper/basic');
-const { toFullDate } = require('../helper/date');
+import basic from "../helper/basic.js";
+const { numberFormatter } = basic;
+import { toFullDate } from "../helper/date.js"
+import { sendMessageWTyping } from "../whatsapp.js";
 
 class SidangController {
-    constructor({ perkara_id, nomor_perkara }, balasan, { from, id }) {
+    constructor({ perkara_id, nomor_perkara }, balasan, from) {
         this.perkara_id = perkara_id
         this.nomor_perkara = nomor_perkara
         this.balasan = balasan
         this.from = from
-        this.id = id
     }
 
     send = async () => {
@@ -26,15 +25,15 @@ class SidangController {
                 }
             })
         } catch (error) {
-            client.sendMessage(process.env.DEVELOPER_CONTACT, `Error pada saat membalas informasi jadwal sidang\n\Log: ${error}`);
+            sendMessageWTyping({ text: `Error pada saat membalas informasi jadwal sidang\n\Log: ${error}` }, numberFormatter(process.env.DEVELOPER_CONTACT));
 
-            client.sendMessage(this.from, "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya");
+            sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
             return false;
         }
 
         const { balasan, balasan_lainya } = this.balasan;
         if (!jadwal_sidang) {
-            client.sendMessage(this.from, balasan_lainya);
+            sendMessageWTyping({ text: balasan_lainya }, this.from);
             return false;
         }
 
@@ -48,17 +47,10 @@ class SidangController {
             .replace('nomor_perkara', this.nomor_perkara)
             .replace('jadwal_sidang', textJadwalSidang)
 
-        client.sendMessage(this.from, textBalasan)
-            .then(res => {
-                console.log(`Informasi jadwal sidang Terkirim ke ${this.from} pada pukul ${moment().format()}`)
-                socket.emit('sendLogMessageOut', {
-                    number: reverseNumberFormatter(this.from),
-                    message: textBalasan,
-                    reference_id: this.id.id,
-                });
-            }).catch(err => console.log(err))
+        console.log(`Informasi jadwal sidang Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 
+        sendMessageWTyping({ text: textBalasan }, this.from)
     }
 }
 
-module.exports = SidangController
+export default SidangController
