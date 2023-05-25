@@ -71,7 +71,7 @@ const startSock = async () => {
       message.messages[0].key.remoteJid !== 'status@broadcast'
     ) {
       const reply = new Reply(message.messages[0])
-      await reply.init();
+      await reply.init(reply.service);
 
       await sock.readMessages([message.messages[0].key])
 
@@ -85,11 +85,29 @@ const startSock = async () => {
         await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
       }
 
-      if (reply.service !== null) {
+      if (reply.controller !== null) {
+        const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
 
+        await controller.init()
+
+        if (controller.error) {
+          await sock.sendMessage(
+            basic.numberFormatter(process.env.DEVELOPER_CONTACT),
+            { text: controller.errText }
+          )
+        }
+
+        await sock.sendMessage(
+          message.messages[0].key.remoteJid,
+          { text: controller.text }
+        )
+      } else {
+        await sock.sendMessage(
+          message.messages[0].key.remoteJid,
+          { text: reply.text }
+        )
       }
 
-      // await sock.sendMessage(message.messages[0].key.remoteJid, { text: reply.text })
     }
   })
 
