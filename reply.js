@@ -13,7 +13,14 @@ class Reply {
 
     text;
     errText;
-    service = null;
+    /**
+     * @type {Array}
+     */
+    service = [];
+    controller = null;
+    perkara = null;
+    nonPerkara = null;
+    balasan;
 
     /**
      * @type {boolean}
@@ -34,10 +41,6 @@ class Reply {
 
         this.service = textMessage.split("#");
 
-        if (this.service.length > 1) {
-            return this.init(cleanString(this.service[0]), this.service[1])
-        }
-
         if (cleanString(textMessage) === 'info') {
             let textServices = '';
             const textSelamatDatang = register_pemberitahuan.find(row => row.keperluan === "pesan_awal")
@@ -52,6 +55,10 @@ class Reply {
             return false;
         }
 
+        if (this.service.length > 1) {
+            return false;
+        }
+
         console.log('Pesan masuk permintaan informasi awal')
         const pesan = register_alternatif.find(row => row.item == "awal");
 
@@ -59,58 +66,71 @@ class Reply {
         return false;
     }
 
-    async init(service, identifier) {
-        const getService = register_balasan.find(element => element.kata_kunci == service)
-        console.log('Pesan masuk permintaan informasi ' + service)
+    /**
+     * 
+     * @param {Array} services 
+     * @returns 
+     */
+    async init(services) {
 
-        if (!getService) {
-            const serviceNotFound = register_alternatif.find(element => element.code == 404 && element.item == "service");
+        if (services.length > 1) {
 
-            this.text = serviceNotFound.text
+            const service = services[0]
+            const identifier = services[1]
 
-            return false;
-        }
+            const getService = register_balasan.find(element => element.kata_kunci == service)
 
-        this.service = await import('./controller/' + getService.controller);
+            this.balasan = getService;
 
-        if (isNomorPerkara(identifier) == true) {
-            let data;
+            console.log('Pesan masuk permintaan informasi ' + service)
 
-            try {
-                data = await prisma.perkara.findUnique({
-                    where: {
-                        nomor_perkara: identifier
-                    }
-                })
+            if (!getService) {
+                const serviceNotFound = register_alternatif.find(element => element.code == 404 && element.item == "service");
 
-            } catch (error) {
-
-                this.error = true;
-                this.errText = `Error pada saat mencari perkara\n\n${error}`;
-
-                this.text = "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya";
+                this.text = serviceNotFound.text
 
                 return false;
             }
 
-            if (!data) {
-                const dataNotFound = register_alternatif.find(element => element.code == 404 && element.item == "nomor_perkara");
+            if (isNomorPerkara(identifier) == true) {
+                let data;
 
-                this.text = dataNotFound.text
+                try {
+                    data = await prisma.perkara.findUnique({
+                        where: {
+                            nomor_perkara: identifier
+                        }
+                    })
+
+                } catch (error) {
+
+                    this.error = true;
+                    this.errText = `Error pada saat mencari perkara\n\n${error}`;
+
+                    this.text = "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya";
+
+                    return false;
+                }
+
+                if (!data) {
+                    const dataNotFound = register_alternatif.find(element => element.code == 404 && element.item == "nomor_perkara");
+
+                    this.text = dataNotFound.text
+                    return false;
+                }
+
+                this.perkara = data;
+                this.controller = await import('./controller/' + getService.controller);
+
                 return false;
             }
 
-            // const pesan = new Controller.default(data, getService, this.messageInstance.key.remoteJid)
+            this.nonPerkara = identifier;
+            this.controller = await import('./controller/' + getService.controller);
 
-            // this.text = pesan.text;
             return false;
         }
 
-        // const pesan = new Controller.default(identifier, getService, this.messageInstance.key.remoteJid)
-
-        // this.text = pesan.text;
-
-        return false;
     }
 }
 

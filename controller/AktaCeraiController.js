@@ -5,12 +5,17 @@ import { toFullDate } from "../helper/date.js";
 import { sendMessageWTyping } from "../whatsapp.js";
 import basic from "../helper/basic.js"
 class AktaCeraiController {
-  constructor({ perkara_id }, balasan, remoteJid) {
+
+  text;
+  error = false;
+  errText = null;
+
+  constructor({ perkara_id }, balasan) {
     this.perkara_id = perkara_id;
     this.balasan = balasan;
-    this.from = remoteJid;
   }
-  send = async () => {
+
+  init = async () => {
     let data;
     try {
       data = await prisma.perkara_akta_cerai.findUnique({
@@ -22,9 +27,12 @@ class AktaCeraiController {
         }
       })
     } catch (error) {
-      sendMessageWTyping({ text: `Error pada saat membalas informasi akta cerai\n\Log: ${error}` }, basic.numberFormatter(process.env.DEVELOPER_CONTACT));
+      // sendMessageWTyping({ text: `Error pada saat membalas informasi akta cerai\n\Log: ${error}` }, basic.numberFormatter(process.env.DEVELOPER_CONTACT));
+      this.error = true;
+      this.errText = `Error pada saat membalas informasi akta cerai\n\Log: ${error}`;
 
-      sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
+      // sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
+      this.text = "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya";
       return false;
     }
 
@@ -41,7 +49,8 @@ class AktaCeraiController {
         .replace("tanggal_akta_cerai", toFullDate(data.tgl_akta_cerai))
       : balasan_lainya;
 
-    sendMessageWTyping({ text: textBalasan }, this.from)
+    // sendMessageWTyping({ text: textBalasan }, this.from)
+    this.text = textBalasan;
 
     console.log(`Informasi AKta cerai Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 

@@ -1,6 +1,5 @@
 import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient()
-import { sendMessageWTyping } from '../whatsapp.js';
 import { toFullDate } from '../helper/date.js';
 import { jenisTrans, rupiah } from "../helper/nominal.js"
 import basic from "../helper/basic.js"
@@ -9,6 +8,10 @@ import angkaTerbilang from '@develoka/angka-terbilang-js';
 import moment from 'moment';
 
 class TransaksiController {
+    text;
+    error = false;
+    errText = null;
+
     constructor({ perkara_id, nomor_perkara }, balasan, from) {
         this.perkara_id = perkara_id
         this.nomor_perkara = nomor_perkara
@@ -16,7 +19,7 @@ class TransaksiController {
         this.from = from
     }
 
-    send = async () => {
+    init = async () => {
 
         let pembayaran;
         try {
@@ -27,16 +30,20 @@ class TransaksiController {
             })
 
         } catch (error) {
-            sendMessageWTyping({ text: `Error pada saat membalas informasi transaksi\n\Log: ${error}` }, numberFormatter(process.env.DEVELOPER_CONTACT));
+            // sendMessageWTyping({ text: `Error pada saat membalas informasi transaksi\n\Log: ${error}` }, numberFormatter(process.env.DEVELOPER_CONTACT));
+            this.error = true;
+            this.errText = `Error pada saat membalas informasi transaksi\n\Log: ${error}`
 
-            sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
+            // sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
+            this.text = "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya";
             return false
         }
 
         const { balasan, balasan_lainya } = this.balasan;
 
         if (!pembayaran) {
-            sendMessageWTyping({ text: balasan_lainya }, this.from)
+            // sendMessageWTyping({ text: balasan_lainya }, this.from)
+            this.text = balasan_lainya;
             return false
         }
 
@@ -67,7 +74,8 @@ class TransaksiController {
 
         console.log(`Informasi Transaksi Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 
-        sendMessageWTyping({ text: textBalasan }, this.from)
+        // sendMessageWTyping({ text: textBalasan }, this.from)
+        this.text = textBalasan;
 
     }
 }

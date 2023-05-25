@@ -1,20 +1,21 @@
 import { PrismaClient } from '@prisma/client';
 import moment from 'moment';
 const prisma = new PrismaClient()
-import basic from "../helper/basic.js";
-const { numberFormatter } = basic;
 import { toFullDate } from "../helper/date.js"
-import { sendMessageWTyping } from "../whatsapp.js";
+
 
 class SidangController {
-    constructor({ perkara_id, nomor_perkara }, balasan, from) {
+    text;
+    error = false;
+    errText = null;
+
+    constructor({ perkara_id, nomor_perkara }, balasan) {
         this.perkara_id = perkara_id
         this.nomor_perkara = nomor_perkara
         this.balasan = balasan
-        this.from = from
     }
 
-    send = async () => {
+    init = async () => {
 
         let jadwal_sidang;
 
@@ -25,15 +26,19 @@ class SidangController {
                 }
             })
         } catch (error) {
-            sendMessageWTyping({ text: `Error pada saat membalas informasi jadwal sidang\n\Log: ${error}` }, numberFormatter(process.env.DEVELOPER_CONTACT));
+            // sendMessageWTyping({ text: `Error pada saat membalas informasi jadwal sidang\n\Log: ${error}` }, numberFormatter(process.env.DEVELOPER_CONTACT));
+            this.error = true;
+            this.errText = `Error pada saat membalas informasi jadwal sidang\n\Log: ${error}`;
 
-            sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
+            // sendMessageWTyping({ text: "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya" }, this.from);
+            this.text = "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya";
             return false;
         }
 
         const { balasan, balasan_lainya } = this.balasan;
         if (!jadwal_sidang) {
-            sendMessageWTyping({ text: balasan_lainya }, this.from);
+            // sendMessageWTyping({ text: balasan_lainya }, this.from);
+            this.text = balasan_lainya;
             return false;
         }
 
@@ -49,7 +54,8 @@ class SidangController {
 
         console.log(`Informasi jadwal sidang Terkirim ke ${this.from} pada pukul ${moment().format()}`)
 
-        sendMessageWTyping({ text: textBalasan }, this.from)
+        // sendMessageWTyping({ text: textBalasan }, this.from)
+        this.text = textBalasan;
     }
 }
 
