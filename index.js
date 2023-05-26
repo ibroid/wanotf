@@ -1,11 +1,13 @@
 import { startSock, getSession } from "./whatsapp.js";
 import Reply from "./reply.js";
 import nodeCleanup from "node-cleanup"
+import jobs from "./notification.js";
 
 (async function initialize() {
 
-  const sock = await startSock()
+  await startSock()
 
+  jobs.start()
 
 })()
 

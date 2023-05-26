@@ -1,3 +1,3 @@
-const notifSidang = require('./tasks/NotifikasiSidang');
+import NotifikasiSidang from "./tasks/NotifikasiSidang.js";
 
-notifSidang.start()
+await NotifikasiSidang();

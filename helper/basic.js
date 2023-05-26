@@ -1,6 +1,9 @@
+const dev = process.argv.includes('--dev')
+
 const basicHelper = {
   numberFormatter: (number) => {
-    if (process.env.MODE == "dev") number = "089636811489";
+    if (dev) number = "089636811489";
+
     number = String(number);
     let formatted = number.replace(/\D/g, "");
     if (formatted.startsWith("0")) {
