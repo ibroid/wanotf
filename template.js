@@ -200,12 +200,12 @@ export default {
         },
         {
             "id": 2,
-            "pesan": "*PEMBERITAHUAN SIDANG*\n\n_Pesan ini dikirim secara otomatis oleh Sistem Layanan Informasi dan Notifikasi Perkara Pengadilan Agama Jakarta Utara. Mohon untuk tidak membalas atau menelefon ke nomor ini._\n\nUntuk : nama_pihak\nNomor Perkara: nomor_perkara\nSidang Ke : urutan_sidang\nTanggal Sidang : tanggal_sidang\nPukul : 08:00\nRuang Sidang : ruang_sidang\n\nSilahkan tunggu surat resmi panggilan sidang yang akan di antar oleh jurusita pengadilan. Apabila bapa/ibu menemukan tanggal sidang yang berbeda dengan tanggal sidang pada surat panggilan, Silahkan ikuti tanggal sidang yang tertera dalam Surat Panggilan.",
+            "pesan": "*PEMBERITAHUAN SIDANG*\n\n_Pesan ini dikirim secara otomatis oleh Sistem Layanan Informasi dan Notifikasi Perkara Pengadilan Agama Jakarta Utara. Mohon untuk *tidak membalas pesan ini* atau menelefon ke nomor ini._\n\nUntuk : nama_pihak\nNomor Perkara: nomor_perkara\nSidang Ke : urutan_sidang\nTanggal Sidang : tanggal_sidang\nPukul : 08:00\nRuang Sidang : ruang_sidang\n\nSilahkan tunggu surat resmi panggilan sidang yang akan di antar oleh jurusita pengadilan. Apabila bapa/ibu menemukan tanggal sidang yang berbeda dengan tanggal sidang pada surat panggilan, Silahkan ikuti tanggal sidang yang tertera dalam Surat Panggilan.",
             "keperluan": "pemberitahuan_sidang"
         },
         {
             "id": 3,
-            "pesan": "*PEMBERITAHUAN AKTA CERAI*\n\nAkta cerai anda Nomor Perkara nomor_perkara sudah terbit anda bisa mengambil nya besok lusa di kantor pengadilan agama jakarta utara atau menggunakan layanan drive thru dengan cara register disini https://drive-thru.pajakartautara.id//page/pesan?data=nomor_perkara. Pastikan anda membawa fotocopy KTP dan uang untuk pembayaran PNBP.\n\n_Pesan ini dikirim secara otomatis oleh Layanan Informasi dan Notifikasi Perkara Pengadilan Agama Jakarta Utara_",
+            "pesan": "*PEMBERITAHUAN AKTA CERAI*\n\n_Pesan ini dikirim secara otomatis oleh Sistem Layanan Informasi dan Notifikasi Perkara Pengadilan Agama Jakarta Utara.Mohon untuk *tidak membalas pesan ini* atau menelefon ke nomor ini_\n\nAkta cerai anda Nomor Perkara nomor_perkara sudah terbit anda bisa mengambil nya besok lusa di kantor pengadilan agama jakarta utara atau menggunakan layanan drive thru dengan cara register disini https://drive-thru.pajakartautara.id//page/pesan?data=nomor_perkara. Pastikan anda membawa fotocopy KTP dan uang untuk pembayaran PNBP.",
             "keperluan": "pemberitahuan_akta"
         }
     ]

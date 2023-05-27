@@ -90,14 +90,14 @@ export default async function NotifikasiSidang() {
         await sendMessageWTyping({ text: notifMessage }, numberFormatter(process.env.DEVELOPER_CONTACT))
 
       } catch (error) {
-        const errMessage = `Error saat notifikasi sidang nomor ${row.nomor_perkara} ke ${ros.pihak.telepon}. Error : ${error}`;
+        const errMessage = `Error saat notifikasi sidang nomor ${row.nomor_perkara} ke ${pengaju.pihak.telepon}. Error : ${error}`;
 
         await sendMessageWTyping({ text: errMessage }, numberFormatter(process.env.DEVELOPER_CONTACT))
 
         console.log(errMessage)
       }
 
-    }, 1000 * 60 * i)
+    }, 3000 * 60 * i)
   })
 }
 
