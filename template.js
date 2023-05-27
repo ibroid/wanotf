@@ -178,19 +178,21 @@ export default {
             "controller": "PersyaratanController.js",
             "kata_cari": []
         },
-        // {
-        //     "id": 6,
-        //     "judul": "*Informasi Antrian Berjalan*",
-        //     "kata_kunci": "antrian",
-        //     "contoh": "\nketik: antrian#jenis_antrian\nContoh: 1. antrian#sidang (Menampilkan Informasi Antrian Sidang)\n2. antrian#ptsp (Menampilkan Antrian Pelayanan PTSP)",
-        //     "balasan": {
-        //         "sidang": "antrian_saat_ini\nUntuk melihat nomor antrian yang sudah di panggil dan yang belum di panggil silahkan balas dengan mengetik antrian#riwayat_sidang",
-        //         "ptsp": ""
-        //     },
-        //     "balasan_lainya": "Jenis antrian tidak dietmukan silahkan coba lagi",
-        //     "controller": "AntrianController.js",
-        //     "kata_cari": []
-        // }
+        {
+            "id": 6,
+            "judul": "*Informasi Antrian Berjalan*",
+            "kata_kunci": "antrian",
+            "contoh": "\nketik: antrian#jenis_antrian\nContoh:\n1. antrian#sidang (Menampilkan Informasi Antrian yang sedang di panggil persidangan)\n2. antrian#belum sidang (Menampilkan Antrian yang belum di panggil persidangan)\n3.antrian#sudah sidang (Menampilkan Antrian yang sudah di panggil persidangan\n4.antrian#pelayanan (Menampilkan antrian yang sedang di layani oleh loket pelayanan",
+            "balasan": {
+                "sidang": "antrian_saat_ini\nUntuk melihat nomor antrian yang sudah di panggil dan yang belum di panggil silahkan balas dengan mengetik antrian#riwayat_sidang",
+                "pelayanan": "",
+                "belum sidang": "",
+                "sudah sidang": "",
+            },
+            "balasan_lainya": "Jenis antrian tidak dietmukan silahkan coba lagi",
+            "controller": "AntrianController.js",
+            "kata_cari": []
+        }
     ],
     register_pemberitahuan: [
         {

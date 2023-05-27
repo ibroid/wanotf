@@ -6,3 +6,4 @@ auth/
 .env
 baileys_auth_info
 baileys_store_multi.json
+.env
