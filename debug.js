@@ -1,3 +1,3 @@
 import NotifikasiSidang from "./tasks/NotifikasiSidang.js";
-
-await NotifikasiSidang();
+import NotifikasiAkta from "./tasks/NotifikasiAkta.js";
+await NotifikasiAkta();

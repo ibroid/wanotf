@@ -1,15 +1,14 @@
 import { PrismaClient } from '@prisma/client';
 import template from '../template.js';
+import moment from 'moment';
+import { sendMessageWTyping } from '../whatsapp.js';
 
 const prisma = new PrismaClient()
-import moment from 'moment';
-
 const now = moment().locale('id').format('YYYY-MM-DD');
-
 const { register_pemberitahuan } = template
-
 export default async function NotifikasiAkta() {
 
+	console.log("Memulai notifikasi akta cerai")
 	const data = await prisma.perkara_akta_cerai.findMany({
 		select: {
 			nomor_akta_cerai: true,
@@ -36,40 +35,49 @@ export default async function NotifikasiAkta() {
 		}
 	})
 
+	console.log(`Terdapat ${data.length} jadwal sidang untuk dikirim notifikasi`)
+
 	const registerAkta = register_pemberitahuan.find(
 		(Element) => Element.keperluan == "pemberitahuan_akta"
 	);
 
-	console.log(data)
+	if (!data || (Array.isArray(data) && data.length === 0)) {
+		console.log('Data akta cerai tidak ada. Notifikasi akta cerai tidak terjalankan');
+		return;
+	}
 
-	// if (data) {
 
-	// 	data.forEach(async row => {
 
-	// 		const telepon = row.perkara.perkara_pihak1[0].pihak.telepon;
+	data.forEach((row, i) => {
 
-	// 		let textBalasan = registerAkta.pesan;
-	// 		textBalasan = String(textBalasan).replace('nomor_perkara', row.perkara.nomor_perkara)
-	// 		textBalasan = String(textBalasan).replace('nomor_perkara', row.perkara.nomor_perkara)
+		const telepon = row.perkara.perkara_pihak1[0].pihak.telepon;
 
-	// 		if (telepon) {
-	// 			try {
-	// 				await client.sendMessage(numberFormatter(String(telepon)), textBalasan)
-	// 					// await client.sendMessage(numberFormatter(process.env.DEVELOPER_CONTACT), textBalasan)
-	// 					.then(res => {
+		if (!telepon) {
+			return;
+		}
 
-	// 						console.log(`Notifikasi Terkirim ke ${telepon} pada pukul ${moment().format()}`);
+		let textBalasan = registerAkta.pesan;
+		textBalasan = String(textBalasan).replace('nomor_perkara', row.perkara.nomor_perkara)
+		textBalasan = String(textBalasan).replace('nomor_perkara', row.perkara.nomor_perkara)
 
-	// 					})
-	// 			} catch (error) {
-	// 				await client
-	// 					.sendMessage(numberFormatter(String(process.env.DEVELOPER_CONTACT)), "Terdapat error \n\n" + error)
-	// 					.then((res) => res)
-	// 					.catch((err) => console.log(err));
+		setTimeout(async () => {
+			try {
+				const notifMessage = `Notifikasi akta cerai nomor ${row.perkara.nomor_perkara} Terkirim ke ${telepon} pada pukul ${moment().format()}`;
 
-	// 			}
+				await sendMessageWTyping({ text: textBalasan }, numberFormatter(telepon))
+				console.log(notifMessage);
 
-	// 		}
-	// 	})
-	// }
+				await sendMessageWTyping({ text: notifMessage }, numberFormatter(process.env.DEVELOPER_CONTACT));
+
+			} catch (error) {
+				const errMessage = `Error saat notifikasi akta cerai nomor ${row.perkara.nomor_perkara} ke ${telepon}. Error : ${error}`;
+
+				await sendMessageWTyping({ text: errMessage }, numberFormatter(process.env.DEVELOPER_CONTACT))
+
+				console.log(errMessage)
+
+			}
+
+		}, 2000 * 60 * i)
+	})
 }

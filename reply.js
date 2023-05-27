@@ -33,10 +33,10 @@ class Reply {
     constructor(WAMessage) {
         this.messageInstance = WAMessage;
 
-        const textMessage = WAMessage.message.extendedTextMessage.text ?? null;
+        const textMessage = WAMessage.message.extendedTextMessage?.text ?? null;
 
         if (!templateText) {
-            return false;
+            return;
         }
 
         this.service = textMessage.split("#");
@@ -52,18 +52,18 @@ class Reply {
             const pesan = textSelamatDatang.pesan.replace('daftar_layanan', textServices)
 
             this.text = pesan
-            return false;
+            return;
         }
 
         if (this.service.length > 1) {
-            return false;
+            return;
         }
 
         console.log('Pesan masuk permintaan informasi awal')
         const pesan = register_alternatif.find(row => row.item == "awal");
 
         this.text = pesan.text;
-        return false;
+        return;
     }
 
     /**
@@ -89,7 +89,7 @@ class Reply {
 
                 this.text = serviceNotFound.text
 
-                return false;
+                return;
             }
 
             if (isNomorPerkara(identifier) == true) {
@@ -109,26 +109,26 @@ class Reply {
 
                     this.text = "Terjadi kesalahan pada sistem kami. Silahkan hubungi kembali setelah beberapa saat. Mohon maaf atas ketidaknyaman nya";
 
-                    return false;
+                    return;
                 }
 
                 if (!data) {
                     const dataNotFound = register_alternatif.find(element => element.code == 404 && element.item == "nomor_perkara");
 
                     this.text = dataNotFound.text
-                    return false;
+                    return;
                 }
 
                 this.perkara = data;
                 this.controller = await import('./controller/' + getService.controller);
 
-                return false;
+                return;
             }
 
             this.nonPerkara = identifier;
             this.controller = await import('./controller/' + getService.controller);
 
-            return false;
+            return;
         }
 
     }

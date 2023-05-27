@@ -5,7 +5,7 @@ import moment from "moment";
 
 const dev = process.argv.includes('--dev')
 const now = moment().locale('id').format('YYYY-MM-DD HH:mm:ss');
-const cronTime = dev ? '0 20 * * *' : '0 18 * * *';
+const cronTime = dev ? '*/10 * * * *' : '0 20 * * *';
 
 export default cron.schedule(cronTime, async () => {
     console.log("Job notification started at : " + now)
