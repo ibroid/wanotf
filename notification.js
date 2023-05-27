@@ -9,7 +9,7 @@ const cronTime = dev ? '*/10 * * * *' : '0 20 * * *';
 
 export default cron.schedule(cronTime, async () => {
     console.log("Job notification started at : " + now)
-    // await NotifikasiAkta()
+    await NotifikasiAkta()
     await NotifikasiSidang();
 }, {
     timezone: 'Asia/Jakarta',
