@@ -35,7 +35,7 @@ class Reply {
 
         const textMessage = WAMessage.message.extendedTextMessage?.text ?? null;
 
-        if (!templateText) {
+        if (!textMessage) {
             return;
         }
 
