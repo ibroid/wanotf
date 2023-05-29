@@ -81,31 +81,35 @@ const startSock = async () => {
       await delay(2000)
       await sock.sendPresenceUpdate('paused', message.messages[0].key.remoteJid)
 
-      if (reply.error) {
-        await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
-      }
-
-      if (reply.controller !== null) {
-        const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
-
-        await controller.init()
-
-        if (controller.error) {
-          await sock.sendMessage(
-            basic.numberFormatter(process.env.DEVELOPER_CONTACT),
-            { text: controller.errText }
-          )
+      try {
+        if (reply.error) {
+          await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
         }
 
-        await sock.sendMessage(
-          message.messages[0].key.remoteJid,
-          { text: controller.text }
-        )
-      } else {
-        await sock.sendMessage(
-          message.messages[0].key.remoteJid,
-          { text: reply.text }
-        )
+        if (reply.controller !== null) {
+          const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
+
+          await controller.init()
+
+          if (controller.error) {
+            await sock.sendMessage(
+              basic.numberFormatter(process.env.DEVELOPER_CONTACT),
+              { text: controller.errText }
+            )
+          }
+
+          await sock.sendMessage(
+            message.messages[0].key.remoteJid,
+            { text: controller.text }
+          )
+        } else {
+          await sock.sendMessage(
+            message.messages[0].key.remoteJid,
+            { text: reply.text }
+          )
+        }
+      } catch (error) {
+        console.log('Error : ' + error)
       }
 
     }
