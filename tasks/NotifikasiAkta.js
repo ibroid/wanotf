@@ -2,7 +2,9 @@ import { PrismaClient } from '@prisma/client';
 import template from '../template.js';
 import moment from 'moment';
 import { sendMessageWTyping } from '../whatsapp.js';
+import basic from "../helper/basic.js"
 
+const { numberFormatter } = basic;
 const prisma = new PrismaClient()
 const now = moment().locale('id').format('YYYY-MM-DD');
 const { register_pemberitahuan } = template
