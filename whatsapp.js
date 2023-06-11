@@ -66,51 +66,54 @@ const startSock = async () => {
   sock.ev.on('creds.update', saveCreds);
 
   sock.ev.on('messages.upsert', (message) => {
-    if (
-      message.messages[0].key.fromMe !== true &&
-      message.messages[0].key.remoteJid !== 'status@broadcast'
-    ) {
-      message.messages.forEach(async msg => {
+    message.messages.forEach(async (msg) => {
 
-        const reply = new Reply(msg)
-        await reply.init(reply.service);
+      if (msg.key.fromMe !== true) {
+        return false;
+      }
 
-        await sock.readMessages([msg.key])
+      if (msg.key.remoteJid !== 'status@broadcast') {
 
-        await sock.presenceSubscribe(msg.key.remoteJid)
-        await delay(500)
-        await sock.sendPresenceUpdate('composing', msg.key.remoteJid)
-        await delay(2000)
-        await sock.sendPresenceUpdate('paused', msg.key.remoteJid)
+      }
 
-        if (reply.error) {
-          await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
-        }
+      const reply = new Reply(msg)
+      await reply.init(reply.service);
 
-        if (reply.controller !== null) {
-          const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
+      await sock.readMessages([msg.key])
 
-          await controller.init()
+      await sock.presenceSubscribe(msg.key.remoteJid)
+      await delay(500)
+      await sock.sendPresenceUpdate('composing', msg.key.remoteJid)
+      await delay(2000)
+      await sock.sendPresenceUpdate('paused', msg.key.remoteJid)
 
-          if (controller.error) {
-            await sock.sendMessage(
-              basic.numberFormatter(process.env.DEVELOPER_CONTACT),
-              { text: controller.errText }
-            )
-          }
+      if (reply.error) {
+        await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
+      }
 
+      if (reply.controller !== null) {
+        const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
+
+        await controller.init()
+
+        if (controller.error) {
           await sock.sendMessage(
-            msg.key.remoteJid,
-            { text: controller.text }
-          )
-        } else {
-          await sock.sendMessage(
-            msg.key.remoteJid,
-            { text: reply.text }
+            basic.numberFormatter(process.env.DEVELOPER_CONTACT),
+            { text: controller.errText }
           )
         }
-      })
-    }
+
+        await sock.sendMessage(
+          msg.key.remoteJid,
+          { text: controller.text }
+        )
+      } else {
+        await sock.sendMessage(
+          msg.key.remoteJid,
+          { text: reply.text }
+        )
+      }
+    })
   })
 
   Session.set("WASock", sock)
