@@ -65,23 +65,24 @@ const startSock = async () => {
 
   sock.ev.on('creds.update', saveCreds);
 
-  sock.ev.on('messages.upsert', async (message) => {
+  sock.ev.on('messages.upsert', (message) => {
     if (
       message.messages[0].key.fromMe !== true &&
       message.messages[0].key.remoteJid !== 'status@broadcast'
     ) {
-      const reply = new Reply(message.messages[0])
-      await reply.init(reply.service);
+      message.messages.forEach(async msg => {
 
-      await sock.readMessages([message.messages[0].key])
+        const reply = new Reply(msg)
+        await reply.init(reply.service);
 
-      await sock.presenceSubscribe(message.messages[0].key.remoteJid)
-      await delay(500)
-      await sock.sendPresenceUpdate('composing', message.messages[0].key.remoteJid)
-      await delay(2000)
-      await sock.sendPresenceUpdate('paused', message.messages[0].key.remoteJid)
+        await sock.readMessages([msg.key])
 
-      try {
+        await sock.presenceSubscribe(msg.key.remoteJid)
+        await delay(500)
+        await sock.sendPresenceUpdate('composing', msg.key.remoteJid)
+        await delay(2000)
+        await sock.sendPresenceUpdate('paused', msg.key.remoteJid)
+
         if (reply.error) {
           await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
         }
@@ -99,19 +100,16 @@ const startSock = async () => {
           }
 
           await sock.sendMessage(
-            message.messages[0].key.remoteJid,
+            msg.key.remoteJid,
             { text: controller.text }
           )
         } else {
           await sock.sendMessage(
-            message.messages[0].key.remoteJid,
+            msg.key.remoteJid,
             { text: reply.text }
           )
         }
-      } catch (error) {
-        console.log('Error : ' + error)
-      }
-
+      })
     }
   })
 
