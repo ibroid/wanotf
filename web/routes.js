@@ -22,6 +22,13 @@ const routes = [
         }
     },
     {
+        method: "GET",
+        url: "/template/*",
+        handler(request, reply) {
+            reply.sendFile('template/' + request.params['*'])
+        }
+    },
+    {
         method: "POST",
         url: "/api/send_message",
         schema: {
@@ -39,7 +46,8 @@ const routes = [
             }
         },
         handler: sendMessageHandler,
-    }
+    },
+
 ];
 
 export default routes;
