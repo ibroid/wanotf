@@ -7,7 +7,10 @@
   "scripts": {
     "start": "node index.js",
     "dev": "npx nodemon index.js --dev",
+    "dev:notasks": "npx nodemon index.js --dev --no-tasks",
     "dev:reset": "rm -rf ./baileys_auth_info && node index.js --auto-logout --dev",
+    "dev:http": "npx nodemon http.js --dev --dev-http",
+    "test:sipp": "node testdbsipp.js --dev",
     "prod": "pm2 start index.js"
   },
   "author": "Maliki",
@@ -15,8 +18,12 @@
   "dependencies": {
     "@adiwajshing/keyed-db": "^0.2.4",
     "@develoka/angka-terbilang-js": "^1.4.2",
+    "@fastify/view": "^7.4.1",
     "@prisma/client": "^4.3.0",
     "@whiskeysockets/baileys": "^6.0.0",
+    "dotenv": "^16.1.4",
+    "ejs": "^3.1.9",
+    "fastify": "^4.18.0",
     "moment": "^2.29.1",
     "node-cleanup": "^2.1.2",
     "node-cron": "^3.0.0",

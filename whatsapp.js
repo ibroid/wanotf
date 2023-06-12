@@ -68,12 +68,12 @@ const startSock = async () => {
   sock.ev.on('messages.upsert', (message) => {
     message.messages.forEach(async (msg) => {
 
-      if (msg.key.fromMe !== true) {
-        return false;
+      if (msg.key.fromMe) {
+        return;
       }
 
-      if (msg.key.remoteJid !== 'status@broadcast') {
-
+      if (msg.key.remoteJid === 'status@broadcast') {
+        return;
       }
 
       const reply = new Reply(msg)
@@ -91,7 +91,14 @@ const startSock = async () => {
         await sock.sendMessage(basic.numberFormatter(process.env.DEVELOPER_CONTACT), { text: reply.errText })
       }
 
-      if (reply.controller !== null) {
+      if (reply.controller === null) {
+
+        await sock.sendMessage(
+          msg.key.remoteJid,
+          { text: reply.text }
+        )
+      } else {
+
         const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
 
         await controller.init()
@@ -107,21 +114,18 @@ const startSock = async () => {
           msg.key.remoteJid,
           { text: controller.text }
         )
-      } else {
-        await sock.sendMessage(
-          msg.key.remoteJid,
-          { text: reply.text }
-        )
       }
     })
   })
 
   Session.set("WASock", sock)
-
-  return sock;
 }
 
+/**
+ * @return {import ("@whiskeysockets/baileys").WASocket}
+ */
 const getSession = () => {
+
   return Session.get("WASock") ?? null;
 }
 

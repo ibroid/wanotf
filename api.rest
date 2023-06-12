@@ -1,7 +1,13 @@
-POST http://localhost:3000/api/send_message HTTP/1.1
+GET http://localhost:8080/api HTTP/1.1
+Accept: application/json
+
+###
+
+POST http://localhost:8080/api/send_message HTTP/1.1
+Accept: application/json
 Content-Type: application/json
 
 {
-    "number":"089636811489",
-    "text":"test"
+    "text" : "test",
+    "number": "089636811489"
 }
