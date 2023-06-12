@@ -1,11 +1,12 @@
 import basic from "../../helper/basic.js"
 
-
 /**
  * @type {import("fastify/types/hooks").onRequestHookHandler}
  */
 function castNumber(request, reply, done) {
-    request.body.number = basic.numberFormatter(request.body.number)
+    if (request?.body?.number) {
+        request.body.number = basic.numberFormatter(request.body.number)
+    }
     done()
 }
 

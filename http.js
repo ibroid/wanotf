@@ -3,9 +3,14 @@ import { configDotenv } from "dotenv";
 import fastifyView from "@fastify/view";
 import routes from "./web/routes.js"
 import castNumber from "./web/middleware/CastNumber.js";
+import fastifyStatic from "@fastify/static";
+import path from "path";
+import { fileURLToPath } from 'url';
 
 configDotenv()
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 const devHttp = process.argv.includes("--dev-http")
 
 const http = fastify()
@@ -17,6 +22,13 @@ http.register(fastifyView, {
         ejs: await import("ejs")
     }
 })
+
+http.register(fastifyStatic, {
+    root: path.join(__dirname, 'public'),
+    prefix: '/public/',
+    wildcard: true
+})
+
 
 http.addHook("preHandler", castNumber)
 
