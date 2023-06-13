@@ -5,16 +5,18 @@ import { http, host, port } from "./http.js";
 
 (async function initialize() {
 
-  await startSock()
+  http.ready((err) => {
+    if (err) console.log('Http Server Error :' + err);
+
+    console.log('Http Server Running on ' + port)
+
+    // startSock()
+  })
 
   http.listen({
     host,
     port
   })
-    .then(() => {
-      console.log('Http Server Running on ' + port)
-    })
-    .catch(err => console.log('Http Server Error :' + err))
 
   jobs.start()
 

@@ -1,3 +1,4 @@
+import { startWhatsappHandler, stopWhatsappHandler } from "./handler/Engine.js";
 import { sendMessageHandler } from "./handler/Message.js"
 
 /**
@@ -47,6 +48,16 @@ const routes = [
         },
         handler: sendMessageHandler,
     },
+    {
+        method: "POST",
+        url: "/api/start_whatsapp",
+        handler: startWhatsappHandler
+    },
+    {
+        method: "POST",
+        url: "/api/stop_whatsapp",
+        handler: stopWhatsappHandler
+    }
 
 ];
 

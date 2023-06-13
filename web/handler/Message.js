@@ -16,16 +16,12 @@ async function sendMessageHandler(request, reply) {
     }
 
     try {
-
         await session.sendMessage(number, { text })
-
     } catch (error) {
-
         return {
             status: "Failed",
             message: "Error : " + error
         }
-
     }
 
     return {

@@ -1,28 +1,24 @@
 import NodeCache from 'node-cache'
 import pkg from "@whiskeysockets/baileys";
 import basic from "./helper/basic.js"
-
-const { delay, DisconnectReason, fetchLatestBaileysVersion, getAggregateVotesInPollMessage, makeInMemoryStore, proto, useMultiFileAuthState, makeCacheableSignalKeyStore, isJidBroadcast, Browsers } = pkg
-
+import { websocks } from './http.js';
 import Reply from './reply.js';
-
 import P from 'pino'
+import qrcode from "qrcode"
+import applog from './log/Logger.js';
 
+const { delay, DisconnectReason, fetchLatestBaileysVersion, useMultiFileAuthState, makeCacheableSignalKeyStore, isJidBroadcast, Browsers } = pkg
 const logger = P({ timestamp: () => `,"time":"${new Date().toJSON()}"` }).child({})
 logger.level = 'trace'
 
-// external map to store retry counts of messages when decryption/encryption fails
-// keep this out of the socket itself, so as to prevent a message decryption/encryption loop across socket restarts
 const msgRetryCounterCache = new NodeCache()
-
 const Session = new Map();
 
-// start a connection
 const startSock = async () => {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
-  // fetch latest version of WA Web
   const { version, isLatest } = await fetchLatestBaileysVersion()
-  console.log(`using WA v${version.join('.')}, isLatest: ${isLatest}`)
+
+  applog(`using WA v${version.join('.')}, isLatest: ${isLatest}`, "WA")
 
   /**
    * @type {import('@whiskeysockets/baileys').WASocket}
@@ -33,35 +29,53 @@ const startSock = async () => {
     printQRInTerminal: true,
     auth: {
       creds: state.creds,
-      /** caching makes the store faster to send/recv messages */
       keys: makeCacheableSignalKeyStore(state.keys, logger),
     },
     msgRetryCounterCache,
     generateHighQualityLinkPreview: true,
-    // ignore all broadcast messages -- to receive the same
-    // comment the line below out
     shouldIgnoreJid: jid => isJidBroadcast(jid),
     browser: Browsers.ubuntu('Chrome')
   })
-
-  // the process function lets you process all events that just occurred
-  // efficiently in a batch
 
   sock.ev.on('connection.update', (conn) => {
 
     const { connection, lastDisconnect } = conn
 
+    if (conn.qr) {
+      qrcode.toDataURL(conn.qr, (err, uri) => {
+        if (err) {
+          return websocks.get('sock')?.send(JSON.stringify({
+            event: "qr",
+            err: true,
+            payload: "qr code error " + err
+          }))
+        }
+
+        websocks.get('sock')?.send(JSON.stringify({
+          event: "qr",
+          err: false,
+          payload: uri
+        }))
+      })
+    }
+
+    const manual = Session.get("manual");
+
     if (connection === 'close') {
-      // reconnect if not logged out
       if ((lastDisconnect?.error)?.output?.statusCode !== DisconnectReason.loggedOut) {
-        startSock()
+        if (!manual) {
+          startSock()
+        }
+        applog('whatsapp clossed', "WA")
       } else {
-        console.log('Connection closed. You are logged out.')
+        applog('Connection closed. You are logged out.', "WA")
       }
     }
 
-    console.log('connection update')
+    applog('connection update', "WA")
   })
+
+
 
   sock.ev.on('creds.update', saveCreds);
 
@@ -97,28 +111,36 @@ const startSock = async () => {
           msg.key.remoteJid,
           { text: reply.text }
         )
-      } else {
 
-        const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
+        return;
+      }
 
-        await controller.init()
+      const controller = new reply.controller.default(reply.perkara ?? reply.nonPerkara, reply.balasan ?? null);
 
-        if (controller.error) {
-          await sock.sendMessage(
-            basic.numberFormatter(process.env.DEVELOPER_CONTACT),
-            { text: controller.errText }
-          )
-        }
+      await controller.init()
 
+      if (controller.error) {
         await sock.sendMessage(
-          msg.key.remoteJid,
-          { text: controller.text }
+          basic.numberFormatter(process.env.DEVELOPER_CONTACT),
+          { text: controller.errText }
         )
       }
+
+      await sock.sendMessage(
+        msg.key.remoteJid,
+        { text: controller.text }
+      )
+
     })
   })
 
   Session.set("WASock", sock)
+}
+
+const stopSock = (manual = false) => {
+  Session.set("manual", manual);
+  Session.get("WASock")?.end()
+  Session.delete("WASock")
 }
 
 /**
@@ -147,11 +169,12 @@ const sendMessageWTyping = async (msg, jid) => {
     return false;
   }
 
-  console.log('No Session was Connected to Whatsapp')
+  applog('No Session was Connected to Whatsapp', "WA")
 }
 
 export {
   startSock,
+  stopSock,
   sendMessageWTyping,
   getSession,
 };
