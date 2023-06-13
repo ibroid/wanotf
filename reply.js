@@ -33,7 +33,7 @@ class Reply {
     constructor(WAMessage) {
         this.messageInstance = WAMessage;
 
-        const textMessage = WAMessage.message.extendedTextMessage?.text ?? null;
+        const textMessage = WAMessage.message?.extendedTextMessage?.text ?? null;
 
         if (!textMessage) {
             return;
