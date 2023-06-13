@@ -5,7 +5,7 @@ import isNomorPerkara from './helper/perkara.js';
 const prisma = new PrismaClient()
 import templateText from './template.js';
 
-const { cleanString, numberFormatter } = basicHelper;
+const { cleanString } = basicHelper;
 const { register_alternatif, register_balasan, register_pemberitahuan } = templateText;
 
 

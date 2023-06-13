@@ -1,9 +1,10 @@
 import fastify from "fastify";
-import { configDotenv } from "dotenv";
 import fastifyView from "@fastify/view";
+import fastifyStatic from "@fastify/static";
+import fastifyWebsocket from "@fastify/websocket";
+import { configDotenv } from "dotenv";
 import routes from "./web/routes.js"
 import castNumber from "./web/middleware/CastNumber.js";
-import fastifyStatic from "@fastify/static";
 import path from "path";
 import { fileURLToPath } from 'url';
 
@@ -13,9 +14,11 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const devHttp = process.argv.includes("--dev-http")
 
-const http = fastify()
+const http = await fastify()
 const port = process.env.HTTP_PORT ?? 8000;
 const host = process.env.HTTP_URL ?? 'localhost';
+
+const websocks = new Map()
 
 http.register(fastifyView, {
     engine: {
@@ -23,10 +26,25 @@ http.register(fastifyView, {
     }
 })
 
+http.register(fastifyWebsocket)
+
 http.register(fastifyStatic, {
     root: path.join(__dirname, 'public'),
     prefix: '/public/',
     wildcard: true
+})
+
+http.register(async function (core) {
+    core.get("/socket", { websocket: true }, (conn) => {
+        conn.socket.on("message", msg => {
+            conn.socket.send(JSON.stringify({
+                event: "connected",
+                payload: "ok"
+            }))
+        })
+
+        websocks.set("sock", conn.socket)
+    })
 })
 
 
@@ -46,4 +64,4 @@ if (devHttp) {
     })()
 }
 
-export { http, port, host };
+export { http, port, host, websocks };
