@@ -18,7 +18,7 @@ const startSock = async () => {
   const { state, saveCreds } = await useMultiFileAuthState('baileys_auth_info')
   const { version, isLatest } = await fetchLatestBaileysVersion()
 
-  applog(`using WA v${version.join('.')}, isLatest: ${isLatest}`, "WA")
+  applog(`using WA v${version.join('.')}, isLatest: ${isLatest}`, "APP")
 
   /**
    * @type {import('@whiskeysockets/baileys').WASocket}
@@ -66,13 +66,13 @@ const startSock = async () => {
         if (!manual) {
           startSock()
         }
-        applog('whatsapp clossed', "WA")
+        applog('whatsapp clossed', "APP")
       } else {
-        applog('Connection closed. You are logged out.', "WA")
+        applog('Connection closed. You are logged out.', "APP")
       }
     }
 
-    applog('connection update', "WA")
+    applog('connection update', "APP")
   })
 
 
@@ -169,12 +169,19 @@ const sendMessageWTyping = async (msg, jid) => {
     return false;
   }
 
-  applog('No Session was Connected to Whatsapp', "WA")
+  applog('No Session was Connected to Whatsapp', "APP")
+}
+
+function logoutWhatsapp(manual = false) {
+  Session.set("manual", manual);
+  Session.get("WASock")?.logout()
+  Session.delete("WASock")
 }
 
 export {
   startSock,
   stopSock,
+  logoutWhatsapp,
   sendMessageWTyping,
   getSession,
 };

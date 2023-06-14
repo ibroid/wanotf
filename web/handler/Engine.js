@@ -1,4 +1,4 @@
-import { startSock, getSession, stopSock } from "../../whatsapp.js";
+import { startSock, getSession, stopSock, logoutWhatsapp } from "../../whatsapp.js";
 
 
 /**
@@ -41,6 +41,21 @@ function stopWhatsappHandler() {
     return {
         status: "Success",
         message: "Whatsapp stop running"
+    }
+}
+
+function logoutWhatsappHandler() {
+    try {
+        logoutWhatsapp()
+    } catch (error) {
+        return {
+            status: "Failed",
+            message: "Error :" + error
+        }
+    }
+    return {
+        status: "Success",
+        message: "Whatsapp was logged out"
     }
 }
 

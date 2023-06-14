@@ -7,6 +7,7 @@ import routes from "./web/routes.js"
 import castNumber from "./web/middleware/CastNumber.js";
 import path from "path";
 import { fileURLToPath } from 'url';
+import { serviceCrudHandler, createServiceSchema, viewServiceSchema } from "./web/handler/Service.js";
 
 configDotenv()
 
@@ -23,7 +24,9 @@ const websocks = new Map()
 http.register(fastifyView, {
     engine: {
         ejs: await import("ejs")
-    }
+    },
+    viewExt: "ejs",
+    root: path.join(__dirname, "web/views")
 })
 
 http.register(fastifyWebsocket)
@@ -47,6 +50,16 @@ http.register(async function (core) {
     })
 })
 
+http.register(await import("fastify-crud-generator"), {
+    prefix: "/service",
+    controller: serviceCrudHandler,
+    create: {
+        schema: createServiceSchema
+    },
+    view: {
+        schema: viewServiceSchema
+    }
+})
 
 http.addHook("preHandler", castNumber)
 

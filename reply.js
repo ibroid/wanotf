@@ -4,6 +4,7 @@ import isNomorPerkara from './helper/perkara.js';
 
 const prisma = new PrismaClient()
 import templateText from './template.js';
+import applog from './log/Logger.js';
 
 const { cleanString } = basicHelper;
 const { register_alternatif, register_balasan, register_pemberitahuan } = templateText;
@@ -59,7 +60,7 @@ class Reply {
             return;
         }
 
-        console.log('Pesan masuk permintaan informasi awal')
+        applog('Pesan masuk permintaan informasi awal')
         const pesan = register_alternatif.find(row => row.item == "awal");
 
         this.text = pesan.text;
@@ -67,7 +68,6 @@ class Reply {
     }
 
     /**
-     * 
      * @param {Array} services 
      * @returns 
      */
@@ -82,14 +82,13 @@ class Reply {
 
             this.balasan = getService;
 
-            console.log('Pesan masuk permintaan informasi ' + service)
+            applog('Pesan masuk permintaan informasi ' + service)
 
             if (!getService) {
                 const serviceNotFound = register_alternatif.find(element => element.code == 404 && element.item == "service");
 
                 this.text = serviceNotFound.text
-
-                return;
+                turn;
             }
 
             if (isNomorPerkara(identifier) == true) {

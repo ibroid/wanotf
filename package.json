@@ -11,6 +11,10 @@
     "dev:reset": "rm -rf ./baileys_auth_info && node index.js --auto-logout --dev",
     "dev:http": "npx nodemon http.js --dev --dev-http",
     "test:sipp": "node testdbsipp.js --dev",
+    "dbpull:local": "npx prisma db pull --schema=./prisma/schemalocal.prisma",
+    "gen:local": "npx prisma generate --schema=./prisma/schemalocal.prisma",
+    "dbpull:sipp": "npx prisma db pull",
+    "gen:sipp": "npx prisma db pull",
     "prod": "pm2 start index.js"
   },
   "author": "Maliki",
@@ -26,6 +30,7 @@
     "dotenv": "^16.1.4",
     "ejs": "^3.1.9",
     "fastify": "^4.18.0",
+    "fastify-crud-generator": "^1.0.1",
     "moment": "^2.29.1",
     "node-cleanup": "^2.1.2",
     "node-cron": "^3.0.0",
