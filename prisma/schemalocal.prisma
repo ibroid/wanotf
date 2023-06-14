@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/local_client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL_LOCAL")
+}
+
+model datasource_sql {
+  id         Int       @id @default(autoincrement())
+  select     String    @db.Text
+  from       String    @db.VarChar(64)
+  condition  String?   @db.Text
+  join       String?   @db.Text
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model key_value {
+  id                Int       @id @default(autoincrement())
+  template_reply_id Int?
+  source            Int?
+  key               String?   @db.VarChar(64)
+  value             String?   @db.VarChar(64)
+  created_at        DateTime? @default(now()) @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
+}
+
+model service {
+  id         Int       @id @default(autoincrement())
+  title      String?   @db.VarChar(64)
+  keyword    String?   @db.VarChar(64)
+  sample     String?   @db.Text
+  desc       String?   @db.Text
+  separator  String?   @default("#") @db.Char(2)
+  created_at DateTime? @default(now()) @db.Timestamp(0)
+  updated_at DateTime? @db.Timestamp(0)
+}
+
+model template_reply {
+  id         Int                 @id @default(autoincrement())
+  service_id Int
+  text       String              @db.Text
+  loop       template_reply_loop @default(single)
+  created_at DateTime?           @default(now()) @db.Timestamp(0)
+  updated_at DateTime?           @db.Timestamp(0)
+}
+
+enum template_reply_loop {
+  loop   @map("1")
+  single @map("0")
+}

@@ -3,6 +3,7 @@ import moment from 'moment';
 import { PrismaClient } from '@prisma/client';
 import template from "../template.js";
 import { sendMessageWTyping } from "../whatsapp.js";
+import applog from "../log/Logger.js";
 
 const { reverseNumberFormatter, numberFormatter } = basic
 const { register_pemberitahuan } = template;
@@ -11,7 +12,7 @@ const prisma = new PrismaClient()
 const now = moment().locale('id').format('YYYY-MM-DD');
 
 export default async function NotifikasiSidang() {
-  console.log("Memulai notifikasi jadwal sidang");
+  applog("Memulai notifikasi jadwal sidang");
 
   const data = await prisma.perkara.findMany({
     select: {
@@ -44,14 +45,14 @@ export default async function NotifikasiSidang() {
     },
   })
 
-  console.log(`Terdapat ${data.length} jadwal sidang untuk dikirim notifikasi`)
+  applog(`Terdapat ${data.length} jadwal sidang untuk dikirim notifikasi`)
 
   const registerJadwalSidang = register_pemberitahuan.find(
     (Element) => Element.keperluan == "pemberitahuan_sidang"
   );
 
   if (!data || (Array.isArray(data) && data.length === 0)) {
-    console.log('Data sidang tidak ada. Notifikasi sidang tidak terjalankan')
+    applog('Data sidang tidak ada. Notifikasi sidang tidak terjalankan')
     return;
   }
 
@@ -59,14 +60,14 @@ export default async function NotifikasiSidang() {
     const pengaju = row.perkara_pihak1[0];
 
     if (!pengaju.pihak.telepon) {
-      console.log('Data Pihak tidak ada. Notifikasi sidang tidak terjalankan')
+      applog('Data Pihak tidak ada. Notifikasi sidang tidak terjalankan')
       return;
 
     }
     const jadwalSidang = row.perkara_jadwal_sidang[0];
 
     if (!jadwalSidang) {
-      console.log('Jadwal sidang tidak ada. Notifikasi sidang tidak terjalankan')
+      applog('Jadwal sidang tidak ada. Notifikasi sidang tidak terjalankan')
       return;
     }
 
@@ -85,7 +86,7 @@ export default async function NotifikasiSidang() {
         await sendMessageWTyping({ text: textNotifikasi }, numberFormatter(pengaju.pihak.telepon))
 
 
-        console.log(notifMessage);
+        applog(notifMessage);
 
         await sendMessageWTyping({ text: notifMessage }, numberFormatter(process.env.DEVELOPER_CONTACT))
 
@@ -94,7 +95,7 @@ export default async function NotifikasiSidang() {
 
         await sendMessageWTyping({ text: errMessage }, numberFormatter(process.env.DEVELOPER_CONTACT))
 
-        console.log(errMessage)
+        applog(errMessage)
       }
 
     }, 3000 * 60 * i)

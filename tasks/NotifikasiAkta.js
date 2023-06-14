@@ -3,14 +3,16 @@ import template from '../template.js';
 import moment from 'moment';
 import { sendMessageWTyping } from '../whatsapp.js';
 import basic from "../helper/basic.js"
+import applog from '../log/Logger.js';
 
 const { numberFormatter } = basic;
 const prisma = new PrismaClient()
 const now = moment().locale('id').format('YYYY-MM-DD');
 const { register_pemberitahuan } = template
+
 export default async function NotifikasiAkta() {
 
-	console.log("Memulai notifikasi akta cerai")
+	applog("Memulai notifikasi akta cerai", "APP")
 	const data = await prisma.perkara_akta_cerai.findMany({
 		select: {
 			nomor_akta_cerai: true,
@@ -37,14 +39,14 @@ export default async function NotifikasiAkta() {
 		}
 	})
 
-	console.log(`Terdapat ${data.length} jadwal sidang untuk dikirim notifikasi`)
+	applog(`Terdapat ${data.length} jadwal sidang untuk dikirim notifikasi`, "APP")
 
 	const registerAkta = register_pemberitahuan.find(
 		(Element) => Element.keperluan == "pemberitahuan_akta"
 	);
 
 	if (!data || (Array.isArray(data) && data.length === 0)) {
-		console.log('Data akta cerai tidak ada. Notifikasi akta cerai tidak terjalankan');
+		applog('Data akta cerai tidak ada. Notifikasi akta cerai tidak terjalankan', "APP");
 		return;
 	}
 
@@ -67,16 +69,16 @@ export default async function NotifikasiAkta() {
 				const notifMessage = `Notifikasi akta cerai nomor ${row.perkara.nomor_perkara} Terkirim ke ${telepon} pada pukul ${moment().format()}`;
 
 				await sendMessageWTyping({ text: textBalasan }, numberFormatter(telepon))
-				console.log(notifMessage);
+				applog(notifMessage, "APP");
 
-				await sendMessageWTyping({ text: notifMessage }, numberFormatter(process.env.DEVELOPER_CONTACT));
+				// await sendMessageWTyping({ text: notifMessage }, numberFormatter(process.env.DEVELOPER_CONTACT));
 
 			} catch (error) {
 				const errMessage = `Error saat notifikasi akta cerai nomor ${row.perkara.nomor_perkara} ke ${telepon}. Error : ${error}`;
 
 				await sendMessageWTyping({ text: errMessage }, numberFormatter(process.env.DEVELOPER_CONTACT))
 
-				console.log(errMessage)
+				applog(errMessage, "APP")
 
 			}
 
