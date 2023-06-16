@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Wanotif</title>
+    <!-- base:css -->
+    <link rel="stylesheet" href="/template/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/template/vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/template/css/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="/template/images/favicon.png" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- partial:/template/partials/_horizontal-navbar.html -->
+        <div class="horizontal-menu">
+            <%- include('nav-top') -%>
+                <%- include('nav-bot') -%>
+        </div>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-md-7 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2>Daftar Pelayanan Informasi di Aplikasi ini</h2>
+                                    <p class="card-description">
+                                        Service adalah pelayanan yang secara otomatis membalas pesan masuk apabila
+                                        terdapat kata kunci di dalam pesan nya
+                                    </p>
+                                    <div class="template-demo">
+                                        <table class="table table-hovered table-bordered">
+                                            <thead class="bg-dark text-white">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Judul</th>
+                                                    <th>Kata Kunci</th>
+                                                    <th>Contoh</th>
+                                                    <th>Deskripsi</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody-service">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Formulir Tambah Pelayanan</h4>
+                                    <p class="card-description">
+                                        Lengkapi isian berikut
+                                    </p>
+                                    <form class="forms-sample" id="form-services" method="POST">
+                                        <div id="row-input-id" class="form-group row">
+                                            <label class="col-sm-3 col-form-label">ID</label>
+                                            <div class="col-sm-9">
+                                                <input required readonly type="text" name="title" class="form-control"
+                                                    id="input-id" placeholder="Judul Pelayanan">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Judul</label>
+                                            <div class="col-sm-9">
+                                                <input required type="text" name="title" class="form-control"
+                                                    id="input-title" placeholder="Judul Pelayanan">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Kata
+                                                Kunci</label>
+                                            <div class="col-sm-9">
+                                                <input required type="text" class="form-control" name="keyword"
+                                                    id="input-keyword" placeholder="Katakunci Dalam Pesan WA">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Contoh</label>
+                                            <div class="col-sm-9">
+                                                <textarea required class="form-control" name="sample"
+                                                    id="textarea-sample" cols="30" rows="5"></textarea>
+                                            </div>
+                                            <small class="text-info">Sesuaikan Dengan Format Pesan Whatsapp</small>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Deskripsi</label>
+                                            <div class="col-sm-9">
+                                                <textarea required class="form-control" name="desc" id="textarea-desc"
+                                                    cols="30" rows="5"></textarea>
+                                            </div>
+                                        </div>
+                                        <button onclick="tambahData()" type="button" id="button-submit"
+                                            class="btn btn-primary me-2">Submit</button>
+                                        <button onclick="cancel()" type="reset" class="btn btn-light">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%- include('footer') -%>
+            </div>
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+
+    <script src="/template/vendors/base/vendor.bundle.base.js"></script>
+    <script src="/template/js/template.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+
+    <script>
+
+        const swalloading = () => {
+            return Swal.fire({
+                title: "Mohon Tunggu",
+                willOpen: () => Swal.showLoading,
+                backdrop: true,
+                allowOutsideClick: false,
+                showConfirmButton: false
+            })
+        }
+
+        function postData(url, method, body, callback) {
+            $.ajax({
+                url: url,
+                type: method,
+                data: body,
+                accepts: "application/json",
+                contentType: "application/json",
+                success(data) {
+                    callback(data)
+                },
+                error(err) {
+                    Swal.fire("Failed", err.responseJSON.message, 'info')
+                }
+            })
+        }
+
+        const tambahData = function () {
+
+            swalloading()
+
+            const body = new FormData(document.querySelector("#form-services"))
+
+            const bodyJson = new Object
+
+            body.forEach((v, k, p) => {
+                bodyJson[k] = v;
+            })
+
+            postData('/service', 'POST', JSON.stringify(bodyJson), (data) => {
+                $("#form-services").trigger('reset')
+                Swal.fire(data.status, data.message, 'info').then(() => location.reload())
+            })
+        }
+
+        $(document).ready(() => {
+            $("#row-input-id").hide()
+
+            var tableBodyService = $("#tbody-service")
+
+
+            function fetchDataService() {
+                $.ajax({
+                    url: '/service',
+                    method: "GET",
+                    accepts: "application/json",
+                    success({ data }) {
+                        if (data) {
+                            innerTableBodyData(data)
+                        }
+                    },
+                    error(err) {
+                        Swal.fire("Failed", err, "error")
+                    }
+                })
+            }
+
+
+            function appendTableData(data, i) {
+                let elem = '<tr id="' + data.id + '">';
+                elem += '<td>' + i + '</td>';
+                elem += '<td>' + data.title + '</td>';
+                elem += '<td>' + data.keyword + '</td>';
+                elem += '<td>' + data.sample + '</td>';
+                elem += '<td>' + data.desc + '</td>';
+                elem += '<td>';
+                elem += `<button onclick="hapusData(${data.id})" class="btn btn-danger text-white btn-sm">Hapus</button>`
+                elem += `<button onclick="appendUbahData(${data.id})" class="btn btn-warning text-white btn-sm">Ubah</button>`
+                elem += '</td>';
+                elem += '</tr>';
+                return elem;
+            }
+
+
+            function innerTableBodyData(data) {
+                data.forEach((v, i) => {
+                    tableBodyService.append(appendTableData(v, ++i))
+                })
+            }
+
+
+            fetchDataService()
+        })
+
+        const hapusData = async (id) => {
+            const decision = await Swal.fire({
+                title: 'Apa anda yakin ?',
+                backdrop: true,
+                allowOutsideClick: false,
+                showCancelButton: true
+            });
+
+            if (decision.isConfirmed) {
+
+                $.ajax({
+                    url: '/service/' + id,
+                    type: 'DELETE',
+                    contentType: "application/json",
+                    success(data) {
+                        Swal.fire({
+                            title: data.status,
+                            text: data.message,
+                            icon: 'success',
+                            allowOutsideClick: false,
+                            backdrop: true
+                        }).then(() => location.reload())
+
+                    },
+                    error(err) {
+                        Swal.fire("Failed", err.message, 'info')
+                    }
+                })
+            }
+        }
+
+        const appendUbahData = (id) => {
+
+            swalloading()
+            $("#row-input-id").show()
+
+            $.ajax({
+                url: '/service/' + id,
+                type: 'GET',
+                contentType: "application/json",
+                success({ data }) {
+                    $("#input-id").val(data.id)
+                    $("#input-title").val(data.title)
+                    $("#input-keyword").val(data.keyword)
+                    $("#textarea-desc").val(data.desc)
+                    $("#textarea-sample").val(data.sample)
+                    Swal.close()
+                    $("#button-submit").attr('onclick', `ubahData(${id})`)
+                },
+                error(err) {
+                    Swal.fire("Failed", err.message, 'info')
+                }
+            })
+        }
+
+        const ubahData = (id) => {
+            const body = new FormData(document.querySelector("#form-services"))
+
+            const bodyJson = new Object
+
+            body.forEach((v, k, p) => {
+                bodyJson[k] = v;
+            })
+
+            postData('/service/' + id, 'PATCH', JSON.stringify(bodyJson), (data) => {
+                $("#form-services").trigger('reset')
+                Swal.fire(data.status, data.message, 'info').then(() => location.reload())
+            })
+        }
+
+        const cancel = () => {
+            $("#form-services").trigger("reset")
+            $("#row-input-id").hide()
+            $("#button-submit").attr('onclick', 'tambahData()')
+        }
+
+
+    </script>
+</body>
+
+</html>

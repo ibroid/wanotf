@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Wanotif</title>
+    <!-- base:css -->
+    <link rel="stylesheet" href="/template/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/template/vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/template/css/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="/template/images/favicon.png" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- partial:/template/partials/_horizontal-navbar.html -->
+        <div class="horizontal-menu">
+            <%- include('nav-top') -%>
+                <%- include('nav-bot') -%>
+        </div>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-md-7 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2>Daftar Template Pesan Balasan</h2>
+                                    <p class="card-description">
+
+                                    </p>
+                                    <div class="template-demo">
+                                        <table class="table table-hovered table-bordered">
+                                            <thead class="bg-dark text-white">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Service</th>
+                                                    <th>Text</th>
+                                                    <th>Loop</th>
+                                                    <th>Key & Value</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody-template">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Formulir Tambah Pelayanan</h4>
+                                    <p class="card-description">
+                                        Lengkapi isian berikut
+                                    </p>
+                                    <form class="forms-sample" id="form-services" method="POST">
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Service</label>
+                                            <div class="col-sm-9">
+                                                <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                                    data-bs-target="#modal-pilih-service">
+                                                    Pilih Service
+                                                </button>
+
+                                            </div>
+                                        </div>
+                                        <div id="row-input-service-id" class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Service ID</label>
+                                            <div class="col-sm-9">
+                                                <input required readonly type="text" name="service_id"
+                                                    class="form-control" id="input-service-id">
+                                            </div>
+                                        </div>
+                                        <div id="row-input-service-title" class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Nama Service</label>
+                                            <div class="col-sm-9">
+                                                <input required disabled type="text" class="form-control"
+                                                    id="input-service-title">
+                                            </div>
+                                        </div>
+                                        <div class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Text Balasan</label>
+                                            <div class="col-sm-9">
+                                                <textarea required class="form-control" name="text_balasan"
+                                                    id="textarea-text-balasan" cols="30" rows="5"></textarea>
+                                            </div>
+                                            <small class="text-info">Sesuaikan Dengan Format Pesan Whatsapp</small>
+                                        </div>
+                                        <div id="row-input-service-title" class="form-group row">
+                                            <label class="col-sm-3 col-form-label">Kata Pengganti</label>
+                                            <div class="col-sm-9">
+                                                <input required type="text" class="form-control"
+                                                    id="input-service-title">
+                                            </div>
+                                            <small class="text-info">Kata ini akan di replace dengan value yang telah di
+                                                sesuaikan</small>
+                                        </div>
+                                        <button onclick="tambahData()" type="button" id="button-submit"
+                                            class="btn btn-primary me-2">Submit</button>
+                                        <button onclick="cancel()" type="reset" class="btn btn-light">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%- include('footer') -%>
+            </div>
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+
+    <div class="modal fade" id="modal-pilih-service" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Pilih Salah Satu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hovered table-bordered">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th>No</th>
+                                <th>Judul</th>
+                                <th>Kata Kunci</th>
+                                <th>Contoh</th>
+                                <th>Deskripsi</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-service">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/template/vendors/base/vendor.bundle.base.js"></script>
+    <script src="/template/js/template.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+    <script>
+        $("#row-input-service-id").hide()
+        $("#row-input-service-title").hide()
+
+        $(document).ready(() => {
+
+            function fetchDataService() {
+                $.ajax({
+                    url: '/service',
+                    method: "GET",
+                    accepts: "application/json",
+                    success({ data }) {
+                        if (data) {
+                            data.forEach((v, i) => {
+                                ++i;
+                                let elem = '<tr id="' + v.id + '">';
+                                elem += '<td>' + i + '</td>';
+                                elem += '<td>' + v.title + '</td>';
+                                elem += '<td>' + v.keyword + '</td>';
+                                elem += '<td>' + v.sample + '</td>';
+                                elem += '<td>' + v.desc + '</td>';
+                                elem += '<td>';
+                                elem += `<button data-bs-dismiss="modal" onclick="pilihService(${v.id}, '${v.title}')" class="btn btn-primary text-white btn-sm">Pilih</button>`
+                                elem += '</td>';
+                                elem += '</tr>';
+                                $("#tbody-service").append(elem)
+                            })
+                        }
+                    },
+                    error(err) {
+                        Swal.fire("Failed", err, "error")
+                    }
+                })
+            }
+
+            fetchDataService()
+        })
+
+        const pilihService = function (id, title) {
+            $("#row-input-service-id").show()
+            $("#row-input-service-title").show()
+            $("#input-service-id").val(id)
+            $("#input-service-title").val(title)
+        }
+
+    </script>
+
+
+
+</body>
+
+</html>

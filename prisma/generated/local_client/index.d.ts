@@ -32,8 +32,7 @@ export type datasource_sql = {
  */
 export type key_value = {
   id: number
-  template_reply_id: number | null
-  source: number | null
+  source_sql_id: number | null
   key: string | null
   value: string | null
   created_at: Date | null
@@ -64,6 +63,18 @@ export type template_reply = {
   service_id: number
   text: string
   loop: template_reply_loop
+  created_at: Date | null
+  updated_at: Date | null
+}
+
+/**
+ * Model reply_key
+ * 
+ */
+export type reply_key = {
+  id: number
+  key_value_id: number
+  template_reply_id: number
   created_at: Date | null
   updated_at: Date | null
 }
@@ -237,6 +248,16 @@ export class PrismaClient<
     * ```
     */
   get template_reply(): Prisma.template_replyDelegate<GlobalReject>;
+
+  /**
+   * `prisma.reply_key`: Exposes CRUD operations for the **reply_key** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Reply_keys
+    * const reply_keys = await prisma.reply_key.findMany()
+    * ```
+    */
+  get reply_key(): Prisma.reply_keyDelegate<GlobalReject>;
 }
 
 export namespace Prisma {
@@ -709,7 +730,8 @@ export namespace Prisma {
     datasource_sql: 'datasource_sql',
     key_value: 'key_value',
     service: 'service',
-    template_reply: 'template_reply'
+    template_reply: 'template_reply',
+    reply_key: 'reply_key'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -1822,20 +1844,17 @@ export namespace Prisma {
 
   export type Key_valueAvgAggregateOutputType = {
     id: number | null
-    template_reply_id: number | null
-    source: number | null
+    source_sql_id: number | null
   }
 
   export type Key_valueSumAggregateOutputType = {
     id: number | null
-    template_reply_id: number | null
-    source: number | null
+    source_sql_id: number | null
   }
 
   export type Key_valueMinAggregateOutputType = {
     id: number | null
-    template_reply_id: number | null
-    source: number | null
+    source_sql_id: number | null
     key: string | null
     value: string | null
     created_at: Date | null
@@ -1844,8 +1863,7 @@ export namespace Prisma {
 
   export type Key_valueMaxAggregateOutputType = {
     id: number | null
-    template_reply_id: number | null
-    source: number | null
+    source_sql_id: number | null
     key: string | null
     value: string | null
     created_at: Date | null
@@ -1854,8 +1872,7 @@ export namespace Prisma {
 
   export type Key_valueCountAggregateOutputType = {
     id: number
-    template_reply_id: number
-    source: number
+    source_sql_id: number
     key: number
     value: number
     created_at: number
@@ -1866,20 +1883,17 @@ export namespace Prisma {
 
   export type Key_valueAvgAggregateInputType = {
     id?: true
-    template_reply_id?: true
-    source?: true
+    source_sql_id?: true
   }
 
   export type Key_valueSumAggregateInputType = {
     id?: true
-    template_reply_id?: true
-    source?: true
+    source_sql_id?: true
   }
 
   export type Key_valueMinAggregateInputType = {
     id?: true
-    template_reply_id?: true
-    source?: true
+    source_sql_id?: true
     key?: true
     value?: true
     created_at?: true
@@ -1888,8 +1902,7 @@ export namespace Prisma {
 
   export type Key_valueMaxAggregateInputType = {
     id?: true
-    template_reply_id?: true
-    source?: true
+    source_sql_id?: true
     key?: true
     value?: true
     created_at?: true
@@ -1898,8 +1911,7 @@ export namespace Prisma {
 
   export type Key_valueCountAggregateInputType = {
     id?: true
-    template_reply_id?: true
-    source?: true
+    source_sql_id?: true
     key?: true
     value?: true
     created_at?: true
@@ -1996,8 +2008,7 @@ export namespace Prisma {
 
   export type Key_valueGroupByOutputType = {
     id: number
-    template_reply_id: number | null
-    source: number | null
+    source_sql_id: number | null
     key: string | null
     value: string | null
     created_at: Date | null
@@ -2025,8 +2036,7 @@ export namespace Prisma {
 
   export type key_valueSelect = {
     id?: boolean
-    template_reply_id?: boolean
-    source?: boolean
+    source_sql_id?: boolean
     key?: boolean
     value?: boolean
     created_at?: boolean
@@ -4616,6 +4626,930 @@ export namespace Prisma {
 
 
   /**
+   * Model reply_key
+   */
+
+
+  export type AggregateReply_key = {
+    _count: Reply_keyCountAggregateOutputType | null
+    _avg: Reply_keyAvgAggregateOutputType | null
+    _sum: Reply_keySumAggregateOutputType | null
+    _min: Reply_keyMinAggregateOutputType | null
+    _max: Reply_keyMaxAggregateOutputType | null
+  }
+
+  export type Reply_keyAvgAggregateOutputType = {
+    id: number | null
+    key_value_id: number | null
+    template_reply_id: number | null
+  }
+
+  export type Reply_keySumAggregateOutputType = {
+    id: number | null
+    key_value_id: number | null
+    template_reply_id: number | null
+  }
+
+  export type Reply_keyMinAggregateOutputType = {
+    id: number | null
+    key_value_id: number | null
+    template_reply_id: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Reply_keyMaxAggregateOutputType = {
+    id: number | null
+    key_value_id: number | null
+    template_reply_id: number | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type Reply_keyCountAggregateOutputType = {
+    id: number
+    key_value_id: number
+    template_reply_id: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type Reply_keyAvgAggregateInputType = {
+    id?: true
+    key_value_id?: true
+    template_reply_id?: true
+  }
+
+  export type Reply_keySumAggregateInputType = {
+    id?: true
+    key_value_id?: true
+    template_reply_id?: true
+  }
+
+  export type Reply_keyMinAggregateInputType = {
+    id?: true
+    key_value_id?: true
+    template_reply_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Reply_keyMaxAggregateInputType = {
+    id?: true
+    key_value_id?: true
+    template_reply_id?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type Reply_keyCountAggregateInputType = {
+    id?: true
+    key_value_id?: true
+    template_reply_id?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type Reply_keyAggregateArgs = {
+    /**
+     * Filter which reply_key to aggregate.
+     */
+    where?: reply_keyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of reply_keys to fetch.
+     */
+    orderBy?: Enumerable<reply_keyOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: reply_keyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` reply_keys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` reply_keys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned reply_keys
+    **/
+    _count?: true | Reply_keyCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: Reply_keyAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: Reply_keySumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: Reply_keyMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: Reply_keyMaxAggregateInputType
+  }
+
+  export type GetReply_keyAggregateType<T extends Reply_keyAggregateArgs> = {
+        [P in keyof T & keyof AggregateReply_key]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateReply_key[P]>
+      : GetScalarType<T[P], AggregateReply_key[P]>
+  }
+
+
+
+
+  export type Reply_keyGroupByArgs = {
+    where?: reply_keyWhereInput
+    orderBy?: Enumerable<reply_keyOrderByWithAggregationInput>
+    by: Reply_keyScalarFieldEnum[]
+    having?: reply_keyScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: Reply_keyCountAggregateInputType | true
+    _avg?: Reply_keyAvgAggregateInputType
+    _sum?: Reply_keySumAggregateInputType
+    _min?: Reply_keyMinAggregateInputType
+    _max?: Reply_keyMaxAggregateInputType
+  }
+
+
+  export type Reply_keyGroupByOutputType = {
+    id: number
+    key_value_id: number
+    template_reply_id: number
+    created_at: Date | null
+    updated_at: Date | null
+    _count: Reply_keyCountAggregateOutputType | null
+    _avg: Reply_keyAvgAggregateOutputType | null
+    _sum: Reply_keySumAggregateOutputType | null
+    _min: Reply_keyMinAggregateOutputType | null
+    _max: Reply_keyMaxAggregateOutputType | null
+  }
+
+  type GetReply_keyGroupByPayload<T extends Reply_keyGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickArray<Reply_keyGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof Reply_keyGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], Reply_keyGroupByOutputType[P]>
+            : GetScalarType<T[P], Reply_keyGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type reply_keySelect = {
+    id?: boolean
+    key_value_id?: boolean
+    template_reply_id?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+
+  export type reply_keyGetPayload<S extends boolean | null | undefined | reply_keyArgs> =
+    S extends { select: any, include: any } ? 'Please either choose `select` or `include`' :
+    S extends true ? reply_key :
+    S extends undefined ? never :
+    S extends { include: any } & (reply_keyArgs | reply_keyFindManyArgs)
+    ? reply_key 
+    : S extends { select: any } & (reply_keyArgs | reply_keyFindManyArgs)
+      ? {
+    [P in TruthyKeys<S['select']>]:
+    P extends keyof reply_key ? reply_key[P] : never
+  } 
+      : reply_key
+
+
+  type reply_keyCountArgs = 
+    Omit<reply_keyFindManyArgs, 'select' | 'include'> & {
+      select?: Reply_keyCountAggregateInputType | true
+    }
+
+  export interface reply_keyDelegate<GlobalRejectSettings extends Prisma.RejectOnNotFound | Prisma.RejectPerOperation | false | undefined> {
+
+    /**
+     * Find zero or one Reply_key that matches the filter.
+     * @param {reply_keyFindUniqueArgs} args - Arguments to find a Reply_key
+     * @example
+     * // Get one Reply_key
+     * const reply_key = await prisma.reply_key.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUnique<T extends reply_keyFindUniqueArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args: SelectSubset<T, reply_keyFindUniqueArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findUnique', 'reply_key'> extends True ? Prisma__reply_keyClient<reply_keyGetPayload<T>> : Prisma__reply_keyClient<reply_keyGetPayload<T> | null, null>
+
+    /**
+     * Find one Reply_key that matches the filter or throw an error  with `error.code='P2025'` 
+     *     if no matches were found.
+     * @param {reply_keyFindUniqueOrThrowArgs} args - Arguments to find a Reply_key
+     * @example
+     * // Get one Reply_key
+     * const reply_key = await prisma.reply_key.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findUniqueOrThrow<T extends reply_keyFindUniqueOrThrowArgs>(
+      args?: SelectSubset<T, reply_keyFindUniqueOrThrowArgs>
+    ): Prisma__reply_keyClient<reply_keyGetPayload<T>>
+
+    /**
+     * Find the first Reply_key that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {reply_keyFindFirstArgs} args - Arguments to find a Reply_key
+     * @example
+     * // Get one Reply_key
+     * const reply_key = await prisma.reply_key.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirst<T extends reply_keyFindFirstArgs,  LocalRejectSettings = T["rejectOnNotFound"] extends RejectOnNotFound ? T['rejectOnNotFound'] : undefined>(
+      args?: SelectSubset<T, reply_keyFindFirstArgs>
+    ): HasReject<GlobalRejectSettings, LocalRejectSettings, 'findFirst', 'reply_key'> extends True ? Prisma__reply_keyClient<reply_keyGetPayload<T>> : Prisma__reply_keyClient<reply_keyGetPayload<T> | null, null>
+
+    /**
+     * Find the first Reply_key that matches the filter or
+     * throw `NotFoundError` if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {reply_keyFindFirstOrThrowArgs} args - Arguments to find a Reply_key
+     * @example
+     * // Get one Reply_key
+     * const reply_key = await prisma.reply_key.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+    **/
+    findFirstOrThrow<T extends reply_keyFindFirstOrThrowArgs>(
+      args?: SelectSubset<T, reply_keyFindFirstOrThrowArgs>
+    ): Prisma__reply_keyClient<reply_keyGetPayload<T>>
+
+    /**
+     * Find zero or more Reply_keys that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {reply_keyFindManyArgs=} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Reply_keys
+     * const reply_keys = await prisma.reply_key.findMany()
+     * 
+     * // Get first 10 Reply_keys
+     * const reply_keys = await prisma.reply_key.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const reply_keyWithIdOnly = await prisma.reply_key.findMany({ select: { id: true } })
+     * 
+    **/
+    findMany<T extends reply_keyFindManyArgs>(
+      args?: SelectSubset<T, reply_keyFindManyArgs>
+    ): Prisma.PrismaPromise<Array<reply_keyGetPayload<T>>>
+
+    /**
+     * Create a Reply_key.
+     * @param {reply_keyCreateArgs} args - Arguments to create a Reply_key.
+     * @example
+     * // Create one Reply_key
+     * const Reply_key = await prisma.reply_key.create({
+     *   data: {
+     *     // ... data to create a Reply_key
+     *   }
+     * })
+     * 
+    **/
+    create<T extends reply_keyCreateArgs>(
+      args: SelectSubset<T, reply_keyCreateArgs>
+    ): Prisma__reply_keyClient<reply_keyGetPayload<T>>
+
+    /**
+     * Create many Reply_keys.
+     *     @param {reply_keyCreateManyArgs} args - Arguments to create many Reply_keys.
+     *     @example
+     *     // Create many Reply_keys
+     *     const reply_key = await prisma.reply_key.createMany({
+     *       data: {
+     *         // ... provide data here
+     *       }
+     *     })
+     *     
+    **/
+    createMany<T extends reply_keyCreateManyArgs>(
+      args?: SelectSubset<T, reply_keyCreateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Reply_key.
+     * @param {reply_keyDeleteArgs} args - Arguments to delete one Reply_key.
+     * @example
+     * // Delete one Reply_key
+     * const Reply_key = await prisma.reply_key.delete({
+     *   where: {
+     *     // ... filter to delete one Reply_key
+     *   }
+     * })
+     * 
+    **/
+    delete<T extends reply_keyDeleteArgs>(
+      args: SelectSubset<T, reply_keyDeleteArgs>
+    ): Prisma__reply_keyClient<reply_keyGetPayload<T>>
+
+    /**
+     * Update one Reply_key.
+     * @param {reply_keyUpdateArgs} args - Arguments to update one Reply_key.
+     * @example
+     * // Update one Reply_key
+     * const reply_key = await prisma.reply_key.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    update<T extends reply_keyUpdateArgs>(
+      args: SelectSubset<T, reply_keyUpdateArgs>
+    ): Prisma__reply_keyClient<reply_keyGetPayload<T>>
+
+    /**
+     * Delete zero or more Reply_keys.
+     * @param {reply_keyDeleteManyArgs} args - Arguments to filter Reply_keys to delete.
+     * @example
+     * // Delete a few Reply_keys
+     * const { count } = await prisma.reply_key.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+    **/
+    deleteMany<T extends reply_keyDeleteManyArgs>(
+      args?: SelectSubset<T, reply_keyDeleteManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Reply_keys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {reply_keyUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Reply_keys
+     * const reply_key = await prisma.reply_key.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+    **/
+    updateMany<T extends reply_keyUpdateManyArgs>(
+      args: SelectSubset<T, reply_keyUpdateManyArgs>
+    ): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Reply_key.
+     * @param {reply_keyUpsertArgs} args - Arguments to update or create a Reply_key.
+     * @example
+     * // Update or create a Reply_key
+     * const reply_key = await prisma.reply_key.upsert({
+     *   create: {
+     *     // ... data to create a Reply_key
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Reply_key we want to update
+     *   }
+     * })
+    **/
+    upsert<T extends reply_keyUpsertArgs>(
+      args: SelectSubset<T, reply_keyUpsertArgs>
+    ): Prisma__reply_keyClient<reply_keyGetPayload<T>>
+
+    /**
+     * Count the number of Reply_keys.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {reply_keyCountArgs} args - Arguments to filter Reply_keys to count.
+     * @example
+     * // Count the number of Reply_keys
+     * const count = await prisma.reply_key.count({
+     *   where: {
+     *     // ... the filter for the Reply_keys we want to count
+     *   }
+     * })
+    **/
+    count<T extends reply_keyCountArgs>(
+      args?: Subset<T, reply_keyCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends _Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], Reply_keyCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Reply_key.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Reply_keyAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends Reply_keyAggregateArgs>(args: Subset<T, Reply_keyAggregateArgs>): Prisma.PrismaPromise<GetReply_keyAggregateType<T>>
+
+    /**
+     * Group by Reply_key.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {Reply_keyGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends Reply_keyGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: Reply_keyGroupByArgs['orderBy'] }
+        : { orderBy?: Reply_keyGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends TupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, Reply_keyGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetReply_keyGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for reply_key.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export class Prisma__reply_keyClient<T, Null = never> implements Prisma.PrismaPromise<T> {
+    private readonly _dmmf;
+    private readonly _queryType;
+    private readonly _rootField;
+    private readonly _clientMethod;
+    private readonly _args;
+    private readonly _dataPath;
+    private readonly _errorFormat;
+    private readonly _measurePerformance?;
+    private _isList;
+    private _callsite;
+    private _requestPromise?;
+    readonly [Symbol.toStringTag]: 'PrismaPromise';
+    constructor(_dmmf: runtime.DMMFClass, _queryType: 'query' | 'mutation', _rootField: string, _clientMethod: string, _args: any, _dataPath: string[], _errorFormat: ErrorFormat, _measurePerformance?: boolean | undefined, _isList?: boolean);
+
+
+    private get _document();
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): Promise<TResult1 | TResult2>;
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<T | TResult>;
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): Promise<T>;
+  }
+
+
+
+  // Custom InputTypes
+
+  /**
+   * reply_key base type for findUnique actions
+   */
+  export type reply_keyFindUniqueArgsBase = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * Filter, which reply_key to fetch.
+     */
+    where: reply_keyWhereUniqueInput
+  }
+
+  /**
+   * reply_key findUnique
+   */
+  export interface reply_keyFindUniqueArgs extends reply_keyFindUniqueArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findUniqueOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * reply_key findUniqueOrThrow
+   */
+  export type reply_keyFindUniqueOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * Filter, which reply_key to fetch.
+     */
+    where: reply_keyWhereUniqueInput
+  }
+
+
+  /**
+   * reply_key base type for findFirst actions
+   */
+  export type reply_keyFindFirstArgsBase = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * Filter, which reply_key to fetch.
+     */
+    where?: reply_keyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of reply_keys to fetch.
+     */
+    orderBy?: Enumerable<reply_keyOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for reply_keys.
+     */
+    cursor?: reply_keyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` reply_keys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` reply_keys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of reply_keys.
+     */
+    distinct?: Enumerable<Reply_keyScalarFieldEnum>
+  }
+
+  /**
+   * reply_key findFirst
+   */
+  export interface reply_keyFindFirstArgs extends reply_keyFindFirstArgsBase {
+   /**
+    * Throw an Error if query returns no results
+    * @deprecated since 4.0.0: use `findFirstOrThrow` method instead
+    */
+    rejectOnNotFound?: RejectOnNotFound
+  }
+      
+
+  /**
+   * reply_key findFirstOrThrow
+   */
+  export type reply_keyFindFirstOrThrowArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * Filter, which reply_key to fetch.
+     */
+    where?: reply_keyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of reply_keys to fetch.
+     */
+    orderBy?: Enumerable<reply_keyOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for reply_keys.
+     */
+    cursor?: reply_keyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` reply_keys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` reply_keys.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of reply_keys.
+     */
+    distinct?: Enumerable<Reply_keyScalarFieldEnum>
+  }
+
+
+  /**
+   * reply_key findMany
+   */
+  export type reply_keyFindManyArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * Filter, which reply_keys to fetch.
+     */
+    where?: reply_keyWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of reply_keys to fetch.
+     */
+    orderBy?: Enumerable<reply_keyOrderByWithRelationInput>
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing reply_keys.
+     */
+    cursor?: reply_keyWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` reply_keys from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` reply_keys.
+     */
+    skip?: number
+    distinct?: Enumerable<Reply_keyScalarFieldEnum>
+  }
+
+
+  /**
+   * reply_key create
+   */
+  export type reply_keyCreateArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * The data needed to create a reply_key.
+     */
+    data: XOR<reply_keyCreateInput, reply_keyUncheckedCreateInput>
+  }
+
+
+  /**
+   * reply_key createMany
+   */
+  export type reply_keyCreateManyArgs = {
+    /**
+     * The data used to create many reply_keys.
+     */
+    data: Enumerable<reply_keyCreateManyInput>
+    skipDuplicates?: boolean
+  }
+
+
+  /**
+   * reply_key update
+   */
+  export type reply_keyUpdateArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * The data needed to update a reply_key.
+     */
+    data: XOR<reply_keyUpdateInput, reply_keyUncheckedUpdateInput>
+    /**
+     * Choose, which reply_key to update.
+     */
+    where: reply_keyWhereUniqueInput
+  }
+
+
+  /**
+   * reply_key updateMany
+   */
+  export type reply_keyUpdateManyArgs = {
+    /**
+     * The data used to update reply_keys.
+     */
+    data: XOR<reply_keyUpdateManyMutationInput, reply_keyUncheckedUpdateManyInput>
+    /**
+     * Filter which reply_keys to update
+     */
+    where?: reply_keyWhereInput
+  }
+
+
+  /**
+   * reply_key upsert
+   */
+  export type reply_keyUpsertArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * The filter to search for the reply_key to update in case it exists.
+     */
+    where: reply_keyWhereUniqueInput
+    /**
+     * In case the reply_key found by the `where` argument doesn't exist, create a new reply_key with this data.
+     */
+    create: XOR<reply_keyCreateInput, reply_keyUncheckedCreateInput>
+    /**
+     * In case the reply_key was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<reply_keyUpdateInput, reply_keyUncheckedUpdateInput>
+  }
+
+
+  /**
+   * reply_key delete
+   */
+  export type reply_keyDeleteArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+    /**
+     * Filter which reply_key to delete.
+     */
+    where: reply_keyWhereUniqueInput
+  }
+
+
+  /**
+   * reply_key deleteMany
+   */
+  export type reply_keyDeleteManyArgs = {
+    /**
+     * Filter which reply_keys to delete
+     */
+    where?: reply_keyWhereInput
+  }
+
+
+  /**
+   * reply_key without action
+   */
+  export type reply_keyArgs = {
+    /**
+     * Select specific fields to fetch from the reply_key
+     */
+    select?: reply_keySelect | null
+  }
+
+
+
+  /**
    * Enums
    */
 
@@ -4634,8 +5568,7 @@ export namespace Prisma {
 
   export const Key_valueScalarFieldEnum: {
     id: 'id',
-    template_reply_id: 'template_reply_id',
-    source: 'source',
+    source_sql_id: 'source_sql_id',
     key: 'key',
     value: 'value',
     created_at: 'created_at',
@@ -4643,6 +5576,17 @@ export namespace Prisma {
   };
 
   export type Key_valueScalarFieldEnum = (typeof Key_valueScalarFieldEnum)[keyof typeof Key_valueScalarFieldEnum]
+
+
+  export const Reply_keyScalarFieldEnum: {
+    id: 'id',
+    key_value_id: 'key_value_id',
+    template_reply_id: 'template_reply_id',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type Reply_keyScalarFieldEnum = (typeof Reply_keyScalarFieldEnum)[keyof typeof Reply_keyScalarFieldEnum]
 
 
   export const ServiceScalarFieldEnum: {
@@ -4754,8 +5698,7 @@ export namespace Prisma {
     OR?: Enumerable<key_valueWhereInput>
     NOT?: Enumerable<key_valueWhereInput>
     id?: IntFilter | number
-    template_reply_id?: IntNullableFilter | number | null
-    source?: IntNullableFilter | number | null
+    source_sql_id?: IntNullableFilter | number | null
     key?: StringNullableFilter | string | null
     value?: StringNullableFilter | string | null
     created_at?: DateTimeNullableFilter | Date | string | null
@@ -4764,8 +5707,7 @@ export namespace Prisma {
 
   export type key_valueOrderByWithRelationInput = {
     id?: SortOrder
-    template_reply_id?: SortOrder
-    source?: SortOrder
+    source_sql_id?: SortOrder
     key?: SortOrder
     value?: SortOrder
     created_at?: SortOrder
@@ -4778,8 +5720,7 @@ export namespace Prisma {
 
   export type key_valueOrderByWithAggregationInput = {
     id?: SortOrder
-    template_reply_id?: SortOrder
-    source?: SortOrder
+    source_sql_id?: SortOrder
     key?: SortOrder
     value?: SortOrder
     created_at?: SortOrder
@@ -4796,8 +5737,7 @@ export namespace Prisma {
     OR?: Enumerable<key_valueScalarWhereWithAggregatesInput>
     NOT?: Enumerable<key_valueScalarWhereWithAggregatesInput>
     id?: IntWithAggregatesFilter | number
-    template_reply_id?: IntNullableWithAggregatesFilter | number | null
-    source?: IntNullableWithAggregatesFilter | number | null
+    source_sql_id?: IntNullableWithAggregatesFilter | number | null
     key?: StringNullableWithAggregatesFilter | string | null
     value?: StringNullableWithAggregatesFilter | string | null
     created_at?: DateTimeNullableWithAggregatesFilter | Date | string | null
@@ -4914,6 +5854,53 @@ export namespace Prisma {
     updated_at?: DateTimeNullableWithAggregatesFilter | Date | string | null
   }
 
+  export type reply_keyWhereInput = {
+    AND?: Enumerable<reply_keyWhereInput>
+    OR?: Enumerable<reply_keyWhereInput>
+    NOT?: Enumerable<reply_keyWhereInput>
+    id?: IntFilter | number
+    key_value_id?: IntFilter | number
+    template_reply_id?: IntFilter | number
+    created_at?: DateTimeNullableFilter | Date | string | null
+    updated_at?: DateTimeNullableFilter | Date | string | null
+  }
+
+  export type reply_keyOrderByWithRelationInput = {
+    id?: SortOrder
+    key_value_id?: SortOrder
+    template_reply_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type reply_keyWhereUniqueInput = {
+    id?: number
+  }
+
+  export type reply_keyOrderByWithAggregationInput = {
+    id?: SortOrder
+    key_value_id?: SortOrder
+    template_reply_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: reply_keyCountOrderByAggregateInput
+    _avg?: reply_keyAvgOrderByAggregateInput
+    _max?: reply_keyMaxOrderByAggregateInput
+    _min?: reply_keyMinOrderByAggregateInput
+    _sum?: reply_keySumOrderByAggregateInput
+  }
+
+  export type reply_keyScalarWhereWithAggregatesInput = {
+    AND?: Enumerable<reply_keyScalarWhereWithAggregatesInput>
+    OR?: Enumerable<reply_keyScalarWhereWithAggregatesInput>
+    NOT?: Enumerable<reply_keyScalarWhereWithAggregatesInput>
+    id?: IntWithAggregatesFilter | number
+    key_value_id?: IntWithAggregatesFilter | number
+    template_reply_id?: IntWithAggregatesFilter | number
+    created_at?: DateTimeNullableWithAggregatesFilter | Date | string | null
+    updated_at?: DateTimeNullableWithAggregatesFilter | Date | string | null
+  }
+
   export type datasource_sqlCreateInput = {
     select: string
     from: string
@@ -4982,8 +5969,7 @@ export namespace Prisma {
   }
 
   export type key_valueCreateInput = {
-    template_reply_id?: number | null
-    source?: number | null
+    source_sql_id?: number | null
     key?: string | null
     value?: string | null
     created_at?: Date | string | null
@@ -4992,8 +5978,7 @@ export namespace Prisma {
 
   export type key_valueUncheckedCreateInput = {
     id?: number
-    template_reply_id?: number | null
-    source?: number | null
+    source_sql_id?: number | null
     key?: string | null
     value?: string | null
     created_at?: Date | string | null
@@ -5001,8 +5986,7 @@ export namespace Prisma {
   }
 
   export type key_valueUpdateInput = {
-    template_reply_id?: NullableIntFieldUpdateOperationsInput | number | null
-    source?: NullableIntFieldUpdateOperationsInput | number | null
+    source_sql_id?: NullableIntFieldUpdateOperationsInput | number | null
     key?: NullableStringFieldUpdateOperationsInput | string | null
     value?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5011,8 +5995,7 @@ export namespace Prisma {
 
   export type key_valueUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
-    template_reply_id?: NullableIntFieldUpdateOperationsInput | number | null
-    source?: NullableIntFieldUpdateOperationsInput | number | null
+    source_sql_id?: NullableIntFieldUpdateOperationsInput | number | null
     key?: NullableStringFieldUpdateOperationsInput | string | null
     value?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5021,8 +6004,7 @@ export namespace Prisma {
 
   export type key_valueCreateManyInput = {
     id?: number
-    template_reply_id?: number | null
-    source?: number | null
+    source_sql_id?: number | null
     key?: string | null
     value?: string | null
     created_at?: Date | string | null
@@ -5030,8 +6012,7 @@ export namespace Prisma {
   }
 
   export type key_valueUpdateManyMutationInput = {
-    template_reply_id?: NullableIntFieldUpdateOperationsInput | number | null
-    source?: NullableIntFieldUpdateOperationsInput | number | null
+    source_sql_id?: NullableIntFieldUpdateOperationsInput | number | null
     key?: NullableStringFieldUpdateOperationsInput | string | null
     value?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5040,8 +6021,7 @@ export namespace Prisma {
 
   export type key_valueUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
-    template_reply_id?: NullableIntFieldUpdateOperationsInput | number | null
-    source?: NullableIntFieldUpdateOperationsInput | number | null
+    source_sql_id?: NullableIntFieldUpdateOperationsInput | number | null
     key?: NullableStringFieldUpdateOperationsInput | string | null
     value?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -5178,6 +6158,59 @@ export namespace Prisma {
     service_id?: IntFieldUpdateOperationsInput | number
     text?: StringFieldUpdateOperationsInput | string
     loop?: Enumtemplate_reply_loopFieldUpdateOperationsInput | template_reply_loop
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type reply_keyCreateInput = {
+    key_value_id: number
+    template_reply_id: number
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+  }
+
+  export type reply_keyUncheckedCreateInput = {
+    id?: number
+    key_value_id: number
+    template_reply_id: number
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+  }
+
+  export type reply_keyUpdateInput = {
+    key_value_id?: IntFieldUpdateOperationsInput | number
+    template_reply_id?: IntFieldUpdateOperationsInput | number
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type reply_keyUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key_value_id?: IntFieldUpdateOperationsInput | number
+    template_reply_id?: IntFieldUpdateOperationsInput | number
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type reply_keyCreateManyInput = {
+    id?: number
+    key_value_id: number
+    template_reply_id: number
+    created_at?: Date | string | null
+    updated_at?: Date | string | null
+  }
+
+  export type reply_keyUpdateManyMutationInput = {
+    key_value_id?: IntFieldUpdateOperationsInput | number
+    template_reply_id?: IntFieldUpdateOperationsInput | number
+    created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type reply_keyUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    key_value_id?: IntFieldUpdateOperationsInput | number
+    template_reply_id?: IntFieldUpdateOperationsInput | number
     created_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     updated_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -5347,8 +6380,7 @@ export namespace Prisma {
 
   export type key_valueCountOrderByAggregateInput = {
     id?: SortOrder
-    template_reply_id?: SortOrder
-    source?: SortOrder
+    source_sql_id?: SortOrder
     key?: SortOrder
     value?: SortOrder
     created_at?: SortOrder
@@ -5357,14 +6389,12 @@ export namespace Prisma {
 
   export type key_valueAvgOrderByAggregateInput = {
     id?: SortOrder
-    template_reply_id?: SortOrder
-    source?: SortOrder
+    source_sql_id?: SortOrder
   }
 
   export type key_valueMaxOrderByAggregateInput = {
     id?: SortOrder
-    template_reply_id?: SortOrder
-    source?: SortOrder
+    source_sql_id?: SortOrder
     key?: SortOrder
     value?: SortOrder
     created_at?: SortOrder
@@ -5373,8 +6403,7 @@ export namespace Prisma {
 
   export type key_valueMinOrderByAggregateInput = {
     id?: SortOrder
-    template_reply_id?: SortOrder
-    source?: SortOrder
+    source_sql_id?: SortOrder
     key?: SortOrder
     value?: SortOrder
     created_at?: SortOrder
@@ -5383,8 +6412,7 @@ export namespace Prisma {
 
   export type key_valueSumOrderByAggregateInput = {
     id?: SortOrder
-    template_reply_id?: SortOrder
-    source?: SortOrder
+    source_sql_id?: SortOrder
   }
 
   export type IntNullableWithAggregatesFilter = {
@@ -5496,6 +6524,42 @@ export namespace Prisma {
     _count?: NestedIntFilter
     _min?: NestedEnumtemplate_reply_loopFilter
     _max?: NestedEnumtemplate_reply_loopFilter
+  }
+
+  export type reply_keyCountOrderByAggregateInput = {
+    id?: SortOrder
+    key_value_id?: SortOrder
+    template_reply_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type reply_keyAvgOrderByAggregateInput = {
+    id?: SortOrder
+    key_value_id?: SortOrder
+    template_reply_id?: SortOrder
+  }
+
+  export type reply_keyMaxOrderByAggregateInput = {
+    id?: SortOrder
+    key_value_id?: SortOrder
+    template_reply_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type reply_keyMinOrderByAggregateInput = {
+    id?: SortOrder
+    key_value_id?: SortOrder
+    template_reply_id?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type reply_keySumOrderByAggregateInput = {
+    id?: SortOrder
+    key_value_id?: SortOrder
+    template_reply_id?: SortOrder
   }
 
   export type StringFieldUpdateOperationsInput = {

@@ -19,13 +19,12 @@ model datasource_sql {
 }
 
 model key_value {
-  id                Int       @id @default(autoincrement())
-  template_reply_id Int?
-  source            Int?
-  key               String?   @db.VarChar(64)
-  value             String?   @db.VarChar(64)
-  created_at        DateTime? @default(now()) @db.Timestamp(0)
-  updated_at        DateTime? @db.Timestamp(0)
+  id            Int       @id @default(autoincrement())
+  source_sql_id Int?
+  key           String?   @db.VarChar(64)
+  value         String?   @db.VarChar(64)
+  created_at    DateTime? @default(now()) @db.Timestamp(0)
+  updated_at    DateTime? @db.Timestamp(0)
 }
 
 model service {
@@ -46,6 +45,14 @@ model template_reply {
   loop       template_reply_loop @default(single)
   created_at DateTime?           @default(now()) @db.Timestamp(0)
   updated_at DateTime?           @db.Timestamp(0)
+}
+
+model reply_key {
+  id                Int       @id @default(autoincrement())
+  key_value_id      Int
+  template_reply_id Int
+  created_at        DateTime? @default(now()) @db.Timestamp(0)
+  updated_at        DateTime? @db.Timestamp(0)
 }
 
 enum template_reply_loop {
