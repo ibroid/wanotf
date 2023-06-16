@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Wanotif</title>
+    <!-- base:css -->
+    <link rel="stylesheet" href="/template/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/template/vendors/base/vendor.bundle.base.css">
+    <!-- endinject -->
+    <!-- inject:css -->
+    <link rel="stylesheet" href="/template/css/style.css">
+    <!-- endinject -->
+    <link rel="shortcut icon" href="/template/images/favicon.png" />
+</head>
+
+<body>
+    <div class="container-scroller">
+        <!-- partial:/template/partials/_horizontal-navbar.html -->
+        <div class="horizontal-menu">
+            <%- include('nav-top') -%>
+                <%- include('nav-bot') -%>
+        </div>
+        <!-- partial -->
+        <div class="container-fluid page-body-wrapper">
+            <div class="main-panel">
+                <div class="content-wrapper">
+                    <div class="row">
+                        <div class="col-md-7 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h2>Daftar Template Pesan Balasan</h2>
+                                    <p class="card-description">
+
+                                    </p>
+                                    <div class="template-demo">
+                                        <table class="table table-hovered table-bordered">
+                                            <thead class="bg-dark text-white">
+                                                <tr>
+                                                    <th>No</th>
+                                                    <th>Key</th>
+                                                    <th>Value</th>
+                                                    <th>Action</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tbody-template">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-5 grid-margin stretch-card">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h4 class="card-title">Formulir Tambah Pelayanan</h4>
+                                    <p class="card-description">
+                                        Lengkapi isian berikut
+                                    </p>
+                                    <form class="forms-sample" id="form-services" method="POST">
+
+                                        <button onclick="tambahData()" type="button" id="button-submit"
+                                            class="btn btn-primary me-2">Submit</button>
+                                        <button onclick="cancel()" type="reset" class="btn btn-light">Cancel</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <%- include('footer') -%>
+            </div>
+            <!-- main-panel ends -->
+        </div>
+        <!-- page-body-wrapper ends -->
+    </div>
+
+    <div class="modal fade" id="modal-pilih-service" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+        aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">Pilih Salah Satu</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <table class="table table-hovered table-bordered">
+                        <thead class="bg-dark text-white">
+                            <tr>
+                                <th>No</th>
+                                <th>Judul</th>
+                                <th>Kata Kunci</th>
+                                <th>Contoh</th>
+                                <th>Deskripsi</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-service">
+
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/template/vendors/base/vendor.bundle.base.js"></script>
+    <script src="/template/js/template.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
+        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+
+
+
+
+</body>
+
+</html>

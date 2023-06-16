@@ -116,20 +116,34 @@ const createServiceSchema = {
         properties: {
             title: {
                 type: 'string',
-                maxLength: 64
+                maxLength: 64,
+                nullable: false,
+                pattern: '[A-Za-z]+',
+                minLength: 8,
             },
             keyword: {
                 type: 'string',
-                maxLength: 64
+                maxLength: 64,
+                nullable: false,
+                pattern: '[A-Za-z]+',
+                minLength: 1
             },
             sample: {
                 type: 'string',
+                nullable: false,
+                pattern: '[A-Za-z]+',
+                minLength: 8
             },
             desc: {
                 type: 'string',
+                maxLength: 64,
+                nullable: false,
+                pattern: '[A-Za-z]+',
+                minLength: 8
             },
             separator: {
                 type: 'string',
+                pattern: '^.$',
             },
         },
         required: [

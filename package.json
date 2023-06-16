@@ -13,6 +13,7 @@
     "test:sipp": "node testdbsipp.js --dev",
     "dbpull:local": "npx prisma db pull --schema=./prisma/schemalocal.prisma",
     "gen:local": "npx prisma generate --schema=./prisma/schemalocal.prisma",
+    "dbpush:local": "npx prisma db push --schema=./prisma/schemalocal.prisma",
     "dbpull:sipp": "npx prisma db pull",
     "gen:sipp": "npx prisma db pull",
     "prod": "pm2 start index.js"

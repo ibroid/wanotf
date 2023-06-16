@@ -1,6 +1,6 @@
 import { startWhatsappHandler, stopWhatsappHandler } from "./handler/Engine.js";
 import { sendMessageHandler } from "./handler/Message.js"
-
+import { Prisma } from "../prisma/generated/sipp_client/index.js";
 /**
  * @type {import("fastify/types/route").RouteOptions[]}
  */
@@ -9,7 +9,9 @@ const routes = [
         method: "GET",
         url: "/",
         handler: (request, reply) => {
-            reply.view("index.ejs")
+            reply.view("index.ejs", {
+                menu: 'dashboard'
+            })
         }
     },
     {
@@ -33,14 +35,29 @@ const routes = [
         method: "GET",
         url: "/services",
         handler(req, res) {
-            res.view("services/index.ejs")
+            res.view("services.ejs")
         }
     },
     {
         method: "GET",
         url: "/message_template",
         handler(req, res) {
-            res.view("message_template/index.ejs")
+            res.view("message_template.ejs")
+        }
+    },
+    {
+        method: "GET",
+        url: "/key_value",
+        handler(req, res) {
+            res.view("key_value.ejs")
+        }
+    },
+    {
+        method: "GET",
+        url: "/datasource_sql",
+        handler(req, res) {
+            console.log(Prisma.dmmf.datamodel.models)
+            res.view("datasource_sql.ejs", { schemas: "asa" })
         }
     },
     {
@@ -52,9 +69,12 @@ const routes = [
                 properties: {
                     text: {
                         type: 'string',
+                        nullable: false,
+                        minLength: 1
                     },
                     number: {
-                        type: 'string'
+                        type: 'string',
+                        minLength: 10
                     }
                 },
                 required: ['text', 'number'],

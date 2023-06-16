@@ -98,10 +98,17 @@ exports.Prisma.Datasource_sqlScalarFieldEnum = {
 
 exports.Prisma.Key_valueScalarFieldEnum = {
   id: 'id',
-  template_reply_id: 'template_reply_id',
-  source: 'source',
+  source_sql_id: 'source_sql_id',
   key: 'key',
   value: 'value',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.Reply_keyScalarFieldEnum = {
+  id: 'id',
+  key_value_id: 'key_value_id',
+  template_reply_id: 'template_reply_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -146,7 +153,8 @@ exports.Prisma.ModelName = {
   datasource_sql: 'datasource_sql',
   key_value: 'key_value',
   service: 'service',
-  template_reply: 'template_reply'
+  template_reply: 'template_reply',
+  reply_key: 'reply_key'
 };
 
 /**
