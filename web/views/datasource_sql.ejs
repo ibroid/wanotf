@@ -2,102 +2,216 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>Wanotif</title>
-    <!-- base:css -->
-    <link rel="stylesheet" href="/template/vendors/mdi/css/materialdesignicons.min.css">
-    <link rel="stylesheet" href="/template/vendors/base/vendor.bundle.base.css">
-    <!-- endinject -->
-    <!-- inject:css -->
-    <link rel="stylesheet" href="/template/css/style.css">
-    <!-- endinject -->
-    <link rel="shortcut icon" href="/template/images/favicon.png" />
+	<!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Wanotif</title>
+	<!-- base:css -->
+	<link rel="stylesheet" href="/template/vendors/mdi/css/materialdesignicons.min.css">
+	<link rel="stylesheet" href="/template/vendors/base/vendor.bundle.base.css">
+	<!-- endinject -->
+	<!-- inject:css -->
+	<link rel="stylesheet" href="/template/css/style.css">
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+	<!-- endinject -->
+	<link rel="stylesheet" href="https://unpkg.com/@yaireo/tagify/dist/tagify.css">
+	<link rel="shortcut icon" href="/template/images/favicon.png" />
 </head>
 
 <body>
-    <div class="container-scroller">
-        <!-- partial:/template/partials/_horizontal-navbar.html -->
-        <div class="horizontal-menu">
-            <%- include('nav-top') -%>
-                <%- include('nav-bot') -%>
-        </div>
-        <!-- partial -->
-        <div class="container-fluid page-body-wrapper">
-            <div class="main-panel">
-                <div class="content-wrapper">
-                    <div class="row">
-                        <div class="col-md-7 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h2>Daftar Template Pesan Balasan</h2>
-                                    <p class="card-description">
+	<div class="container-scroller">
+		<!-- partial:/template/partials/_horizontal-navbar.html -->
+		<div class="horizontal-menu">
+			<%- include('nav-top') -%>
+				<%- include('nav-bot') -%>
+		</div>
+		<!-- partial -->
+		<div class="container-fluid page-body-wrapper">
+			<div class="main-panel">
+				<div class="content-wrapper">
+					<div class="row">
+						<div class="col-md-7 grid-margin stretch-card">
+							<div class="card">
+								<div class="card-body">
+									<h2>Daftar Template Pesan Balasan</h2>
+									<p class="card-description">
 
-                                    </p>
-                                    <div class="template-demo">
-                                        <table class="table table-hovered table-bordered">
-                                            <thead class="bg-dark text-white">
-                                                <tr>
-                                                    <th>No</th>
-                                                    <th>Select</th>
-                                                    <th>From</th>
-                                                    <th>Condition</th>
-                                                    <th>Join</th>
-                                                    <th>Action</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody id="tbody-template">
+									</p>
+									<div class="template-demo">
+										<table class="table table-hovered table-bordered">
+											<thead class="bg-dark text-white">
+												<tr>
+													<th>No</th>
+													<th>Select</th>
+													<th>From</th>
+													<th>Condition</th>
+													<th>Join</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody id="tbody-template">
 
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-5 grid-margin stretch-card">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h4 class="card-title">Formulir Tambah Pelayanan</h4>
-                                    <p class="card-description">
-                                        Lengkapi isian berikut
-                                        <%= schemas %>
-                                    </p>
-                                    <form class="forms-sample" id="form-services" method="POST">
-                                        <div class="form-group row">
-                                            <label class="col-sm-3 col-form-label">Select</label>
-                                            <div class="col-sm-9">
-                                                <input required type="text" name="title" id="input-title"
-                                                    class="form-control" placeholder="Judul Pelayanan">
-                                            </div>
-                                        </div>
-                                        <button onclick="tambahData()" type="button" id="button-submit"
-                                            class="btn btn-primary me-2">Submit</button>
-                                        <button onclick="cancel()" type="reset" class="btn btn-light">Cancel</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <%- include('footer') -%>
-            </div>
-            <!-- main-panel ends -->
-        </div>
-        <!-- page-body-wrapper ends -->
-    </div>
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-5 grid-margin stretch-card">
+							<div class="card">
+								<div class="card-body">
+									<h4 class="card-title">Form Tambah Datasource SQL</h4>
+									<p class="card-description">
+										Lengkapi isian berikut
+									</p>
+									<form class="forms-sample" id="form-services" method="POST">
+										<div class="form-group row">
+											<label for="input-select" class="col-sm-3 col-form-label">Select Field</label>
+											<div class="col-sm-9">
+												<input required type="text" name="select" id="input-select" class="form-control"
+													placeholder="Nama Field dari table di atas atau dari table join">
+												<i class="text-danger">*Tuliskan select field pada kolom ini. Gunakan koma untuk separator</i>
+											</div>
+										</div>
+										<div class="form-group row">
+											<label for="textarea-query" class="col-sm-3 col-form-label">From Table</label>
+											<div class="col-sm-9">
+												<textarea class="form-control" name="query" id="textarea-query" cols="30"
+													rows="10">FROM</textarea>
+												<i class="text-danger">*Lanjutkan Query anda disini. Gunakan tanda $_$ untuk parameter. Contoh
+													$nomor_perkara$</i>
+											</div>
+										</div>
+										<button onclick="tambahData()" type="button" id="button-submit" class="btn btn-primary me-2">Submit
+										</button>
+										<button onclick="cancel()" type="reset" class="btn btn-light">Cancel</button>
+										<button onclick="test()" type="button" class="btn btn-success">Test SQL</button>
+									</form>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<%- include('footer') -%>
+			</div>
+		</div>
+	</div>
+	<div class="modal fade" id="modal-pilih-table" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+		aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="staticBackdropLabel">Pilih Salah Satu</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<table id="table-schema-sipp" class="table table-hovered table-bordered">
+						<thead class="bg-dark text-white">
+							<tr>
+								<th>No</th>
+								<th>Nama Tabel</th>
+								<th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<% schemas.forEach((schema,i)=> { %>
+								<tr>
+									<td>
+										<%= ++i %>
+									</td>
+									<td>
+										<%= schema.name %>
+									</td>
+									<td><button onclick="pilihSchema('<%= schema.name %>')" data-bs-dismiss="modal"
+											class="btn btn-primary btn-sm">Pilih</button></td>
+								</tr>
+								<% }) %>
+						</tbody>
+					</table>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
 
+	<script src="/template/vendors/base/vendor.bundle.base.js"></script>
+	<script src="/template/js/template.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"></script>
+	<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+	<script src="https://unpkg.com/@yaireo/tagify"></script>
 
-    <script src="/template/vendors/base/vendor.bundle.base.js"></script>
-    <script src="/template/js/template.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <script src="https://code.jquery.com/jquery-3.7.0.min.js"
-        integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+	<script>
+		const swalloading = () => {
+			return Swal.fire({
+				title: "Mohon Tunggu",
+				willOpen: () => Swal.showLoading,
+				backdrop: true,
+				allowOutsideClick: false,
+				showConfirmButton: false
+			})
+		}
 
-    <script></script>
+		function parsingInputSelect() {
+			const inputSelect = JSON.parse($("#input-select").val())
 
+			let inputSelectString = '';
+			inputSelect.forEach(r => {
+				inputSelectString += r.value + ','
+			})
 
+			if (inputSelectString.endsWith(',')) {
+				inputSelectString = inputSelectString.slice(0, -1);
+			}
+
+			return inputSelectString;
+		}
+
+		const tambahData = () => {
+			swalloading()
+
+			$("#input-select").val(parsingInputSelect);
+
+			$.ajax({})
+		}
+
+		$(document).ready(() => {
+
+			let modalTable = new DataTable('#table-schema-sipp');
+			const tagInput = new Tagify(document.querySelector("#input-select"))
+
+		})
+
+		const test = () => {
+			if ($("#input-select").val() === '') {
+				return;
+			}
+
+			swalloading()
+
+			const query = "SELECT " + parsingInputSelect() + ' ' + $("#textarea-query").val()
+
+			$.ajax({
+				url: "/datasource_sql/test",
+				method: "POST",
+				contentType: 'application/json',
+				data: JSON.stringify({
+					query
+				}),
+				success(data) {
+					Swal.fire(data.status, data.message)
+				},
+				error(err) {
+					Swal.fire(err.responseJSON.status, err.responseJSON.message, 'error')
+				}
+			})
+
+		}
+
+	</script>
 
 
 </body>

@@ -128,7 +128,7 @@ const createServiceSchema = {
                 pattern: '[A-Za-z]+',
                 minLength: 1
             },
-            sample: {
+            explanation: {
                 type: 'string',
                 nullable: false,
                 pattern: '[A-Za-z]+',

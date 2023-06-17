@@ -1,6 +1,6 @@
 import { startWhatsappHandler, stopWhatsappHandler } from "./handler/Engine.js";
 import { sendMessageHandler } from "./handler/Message.js"
-import { Prisma } from "../prisma/generated/sipp_client/index.js";
+import { Prisma, PrismaClient } from "../prisma/generated/sipp_client/index.js";
 /**
  * @type {import("fastify/types/route").RouteOptions[]}
  */
@@ -56,8 +56,79 @@ const routes = [
         method: "GET",
         url: "/datasource_sql",
         handler(req, res) {
-            console.log(Prisma.dmmf.datamodel.models)
-            res.view("datasource_sql.ejs", { schemas: "asa" })
+            res.view("datasource_sql.ejs", { schemas: Prisma.dmmf.datamodel.models })
+        }
+    },
+    {
+        method: "POST",
+        url: "/datasource_sql/test",
+        schema: {
+            body: {
+                type: 'object',
+                properties: {
+                    query: {
+                        type: 'string',
+                        minLength: 1,
+                    }
+                },
+                required: ['query']
+            }
+        },
+        async handler(req, res) {
+            try {
+                const prismadb = new PrismaClient()
+                console.log(req.body.query)
+                const result = await prismadb.$queryRaw`SELECT * FROM perkara WHERE nomor_perkara = '12/Pdt.G/2023/PA.JU'`
+                console.log(result)
+                return {
+                    status: "Berhasil",
+                    message: "Query Berjalan"
+                }
+            } catch (error) {
+                return {
+                    status: "Failed",
+                    message: "Error : " + error
+                }
+            }
+        }
+    },
+    {
+        method: "POST",
+        url: "/datasource_sql/get_field",
+        schema: {
+            body: {
+                type: 'object',
+                properties: {
+                    schemaName: {
+                        type: 'string',
+                        minLength: 1,
+                        pattern: '[a-zA-Z]+',
+                    }
+                },
+                required: ['schemaName']
+            }
+        },
+        handler(req, res) {
+            try {
+                const allFields = Prisma.dmmf.datamodel.models.filter((v, i, a) => {
+                    return v.name === req.body.schemaName
+                });
+
+                const selfFields = allFields[0].fields.filter((v, i, a) => {
+                    return v.kind === 'scalar'
+                });
+
+                return {
+                    status: "Success",
+                    data: selfFields
+                }
+            } catch (error) {
+                return {
+                    status: "Failed",
+                    message: "Error : " + error
+                }
+            }
+
         }
     },
     {
