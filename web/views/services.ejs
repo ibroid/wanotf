@@ -63,7 +63,7 @@
                                     <p class="card-description">
                                         Lengkapi isian berikut
                                     </p>
-                                    <form class="forms-sample" id="form-services" method="POST">
+                                    <form class="forms" id="form-services" method="POST">
                                         <div id="row-input-id" class="form-group row">
                                             <label class="col-sm-3 col-form-label">ID</label>
                                             <div class="col-sm-9">
@@ -89,10 +89,10 @@
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label">Contoh</label>
                                             <div class="col-sm-9">
-                                                <textarea required class="form-control" name="sample"
-                                                    id="textarea-sample" cols="30" rows="5"></textarea>
+                                                <textarea required class="form-control" name="explanation"
+                                                    id="textarea-explanation" cols="30" rows="5"></textarea>
+                                                <i class="text-danger">Sesuaikan Dengan Format Pesan Whatsapp</i>
                                             </div>
-                                            <small class="text-info">Sesuaikan Dengan Format Pesan Whatsapp</small>
                                         </div>
                                         <div class="form-group row">
                                             <label class="col-sm-3 col-form-label">Deskripsi</label>
@@ -198,7 +198,7 @@
                 elem += '<td>' + i + '</td>';
                 elem += '<td>' + data.title + '</td>';
                 elem += '<td>' + data.keyword + '</td>';
-                elem += '<td>' + data.sample + '</td>';
+                elem += '<td>' + data.explanation + '</td>';
                 elem += '<td>' + data.desc + '</td>';
                 elem += '<td>';
                 elem += `<button onclick="hapusData(${data.id})" class="btn btn-danger text-white btn-sm">Hapus</button>`
@@ -264,7 +264,7 @@
                     $("#input-title").val(data.title)
                     $("#input-keyword").val(data.keyword)
                     $("#textarea-desc").val(data.desc)
-                    $("#textarea-sample").val(data.sample)
+                    $("#textarea-explanation").val(data.explanation)
                     Swal.close()
                     $("#button-submit").attr('onclick', `ubahData(${id})`)
                 },

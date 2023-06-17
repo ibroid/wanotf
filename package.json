@@ -15,7 +15,7 @@
     "gen:local": "npx prisma generate --schema=./prisma/schemalocal.prisma",
     "dbpush:local": "npx prisma db push --schema=./prisma/schemalocal.prisma",
     "dbpull:sipp": "npx prisma db pull",
-    "gen:sipp": "npx prisma db pull",
+    "gen:sipp": "npx prisma generate",
     "prod": "pm2 start index.js"
   },
   "author": "Maliki",
