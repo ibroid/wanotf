@@ -32,8 +32,8 @@ http.register(fastifyView, {
 http.register(fastifyWebsocket)
 
 http.register(fastifyStatic, {
-    root: path.join(__dirname, 'public'),
-    prefix: '/public/',
+    root: path.join(__dirname, 'web/static'),
+    prefix: '/static/',
     wildcard: true
 })
 
