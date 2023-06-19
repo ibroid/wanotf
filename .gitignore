@@ -1,4 +1,6 @@
 node_modules/
+prisma/generated
+web/static/*
 logs/
 ./session.json
 .wwebjs_auth/
